@@ -14,8 +14,5 @@
     "esModuleInterop": true,
     "jsx": "react"
   },
-  "exclude": [    "node_modules",
-    "ssr.config.js",
-    "dist",
-    ".ssr"]
+  "exclude": ["node_modules", "ssr.config.js", "dist", ".ssr"]
 }

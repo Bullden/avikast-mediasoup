@@ -12,17 +12,14 @@
     "start": "nest start --watch",
     "start:prod": "node dist/main",
     "lint": "eslint './**/*.{ts,tsx}'",
-    "update-localization": "node scripts/update-localization.js",
     "docker:build": "docker-compose build --parallel",
-    "docker:start": "docker-compose up --build",
-    "docker:start:db": "docker-compose -f docker-compose.db-only.yml up",
-    "docker:stop:db": "docker-compose -f docker-compose.db-only.yml down",
-    "start:ssr": "ts-node --project tsconfig.server.json server/main.ts"
+    "docker:start": "docker-compose up --build"
   },
   "dependencies": {
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
     "@nestjs/platform-express": "^7.0.0",
+    "@nestjs/websockets": "^7.0.13",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4"
@@ -39,7 +36,6 @@
     "@typescript-eslint/parser": "^2.34.0",
     "eslint": "^7.0.0",
     "eslint-config-prettier": "^6.10.0",
-    "eslint-plugin-import": "^2.20.1",
     "jest": "^25.1.0",
     "prettier": "2.0.5",
     "supertest": "^4.0.2",
