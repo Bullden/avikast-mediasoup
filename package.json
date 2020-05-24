@@ -18,22 +18,17 @@
   "dependencies": {
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
-    "@nestjs/platform-express": "^7.0.0",
+    "@nestjs/microservices": "^7.1.0",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
-    "@spryrocks/config-node": "^1.0.0-alpha.5",
-    "express": "^4.17.1"
+    "@spryrocks/config-node": "^1.0.0-alpha.5"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.0.0",
     "@nestjs/schematics": "^7.0.0",
-    "@nestjs/testing": "^7.0.0",
     "@spryrocks/eslint-config": "^0.1.1",
-    "@types/express": "^4.17.3",
-    "@types/jest": "25.1.4",
     "@types/node": "^13.9.1",
-    "@types/supertest": "^2.0.8",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.6.2",
     "tsconfig-paths": "^3.9.0",
