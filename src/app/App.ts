@@ -16,5 +16,5 @@ export async function initApplication() {
       port: tcpPort,
     },
   });
-  await app.init();
+  await app.listenAsync();
 }
