@@ -1,10 +1,11 @@
 import {Module} from '@nestjs/common';
 import TestController from './TestController';
+import {ManagerModule} from '../managers/ManagerModule';
 
 @Module({
   imports: [
     //
-    // ManagerModule,
+    ManagerModule,
     // EnhancersModule,
   ],
   controllers: [
