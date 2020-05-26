@@ -1,7 +1,7 @@
 import {Module} from '@nestjs/common';
-import {MediasoupModule} from '../mediasoup/MediasoupModule';
-import IRoomManager from './room/IRoomManager';
-import RoomManager from './room/RoomManager';
+import {MediasoupModule} from 'mediasoup/MediasoupModule';
+import IMediasoupManager from 'managers/mediasoup/IMediasoupManager';
+import MediasoupManager from 'managers/mediasoup/MediasoupManager';
 
 @Module({
   imports: [
@@ -10,13 +10,13 @@ import RoomManager from './room/RoomManager';
   ],
   providers: [
     {
-      provide: IRoomManager,
-      useClass: RoomManager,
+      provide: IMediasoupManager,
+      useClass: MediasoupManager,
     },
   ],
   exports: [
     //
-    IRoomManager,
+    IMediasoupManager,
   ],
 })
 export class ManagerModule {}
