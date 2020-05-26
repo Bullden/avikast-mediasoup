@@ -1,6 +1,6 @@
 import {Module} from '@nestjs/common';
-import TestController from './TestController';
-import {ManagerModule} from '../managers/ManagerModule';
+import MediasoupController from './MediasoupController';
+import {ManagerModule} from 'managers/ManagerModule';
 
 @Module({
   imports: [
@@ -10,7 +10,7 @@ import {ManagerModule} from '../managers/ManagerModule';
   ],
   controllers: [
     //
-    TestController,
+    MediasoupController,
   ],
   exports: [],
 })
