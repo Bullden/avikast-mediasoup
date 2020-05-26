@@ -1,12 +1,14 @@
+import {createWorker} from 'mediasoup';
 import IMediasoup from './IMediasoup';
 import Worker from './Worker';
+import MediasoupConfig from 'mediasoup/MediasoupConfig';
+import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
 
-export default class Mediasoup extends IMediasoup {
-  private workers: Array<Worker>;
+export default class Mediasoup extends IMediasoup implements IMediasoupInternal {
+  private readonly workers: Array<Worker> = [];
 
-  constructor(initialWorkers: Array<Worker>) {
+  constructor(private readonly config: MediasoupConfig) {
     super();
-    this.workers = initialWorkers;
   }
 
   private findBestWorker(): Worker {
@@ -15,7 +17,17 @@ export default class Mediasoup extends IMediasoup {
     return worker;
   }
 
+  public async createWorker() {
+    const worker = new Worker(this, await createWorker());
+    this.workers.push(worker);
+    return worker;
+  }
+
   public async createRouter() {
     return this.findBestWorker().createRouter();
+  }
+
+  getConfig(): MediasoupConfig {
+    return this.config;
   }
 }

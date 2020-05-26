@@ -1,5 +1,6 @@
 import {types} from 'mediasoup';
+import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
 
 export default class Router {
-  constructor(private readonly instance: types.Router) {}
+  constructor(mediasoup: IMediasoupInternal, private readonly instance: types.Router) {}
 }

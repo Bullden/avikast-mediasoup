@@ -1,19 +1,24 @@
-import {types, createWorker} from 'mediasoup';
+import {types} from 'mediasoup';
 import Router from './Router';
+import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
 
 export default class Worker {
-  public static async createWorker() {
-    return new Worker(await createWorker());
-  }
-
   private readonly _routers: Array<Router> = [];
 
-  private constructor(private readonly instance: types.Worker) {
+  public constructor(
+    private readonly mediasoup: IMediasoupInternal,
+    private readonly instance: types.Worker,
+  ) {
     this.instance = instance;
   }
 
   public async createRouter() {
-    const router = new Router(await this.instance.createRouter());
+    const config = this.mediasoup.getConfig();
+    const {mediaCodecs} = config;
+    const router = new Router(
+      this.mediasoup,
+      await this.instance.createRouter({mediaCodecs}),
+    );
     this._routers.push(router);
     return router;
   }
