@@ -1,6 +1,6 @@
 import {Module} from '@nestjs/common';
 import IMediasoup from './IMediasoup';
-import Mediasoup from './Mediasoup';
+import {initializeMediasoup} from './MediasoupInitializer';
 
 @Module({
   imports: [
@@ -10,7 +10,7 @@ import Mediasoup from './Mediasoup';
     {
       provide: IMediasoup,
       useFactory: () => {
-        return new Mediasoup();
+        return initializeMediasoup();
       },
     },
   ],
