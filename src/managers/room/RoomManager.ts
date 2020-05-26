@@ -7,4 +7,9 @@ export default class RoomManager extends IRoomManager {
   constructor(private readonly mediasoup: IMediasoup) {
     super();
   }
+
+  async createRoom() {
+    await this.mediasoup.createRouter();
+    return {};
+  }
 }
