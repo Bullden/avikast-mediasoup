@@ -11,7 +11,7 @@ export default class MediasoupController {
   async createRouter(request: CreateRouterRequest): Promise<CreateRouterResponse> {
     // eslint-disable-next-line no-console
     console.log(request);
-    await this.roomManager.createRouter();
-    return {};
+    const router = await this.roomManager.createRouter();
+    return {rtpCapabilities: router.rtpCapabilities};
   }
 }
