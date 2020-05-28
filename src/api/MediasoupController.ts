@@ -26,6 +26,6 @@ export default class MediasoupController {
     // eslint-disable-next-line no-console
     console.log(request);
     const transportOptions = await this.roomManager.createTransport(request.name);
-    return transportOptions;
+    return {transportOptions};
   }
 }
