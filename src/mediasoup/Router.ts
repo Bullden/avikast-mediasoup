@@ -1,6 +1,6 @@
 import {types} from 'mediasoup';
 import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
-import {Transport} from 'mediasoup/lib/Transport';
+import Transport from './WebRtcTransport';
 
 export default class Router {
   private readonly transports: Array<Transport> = [];
@@ -14,21 +14,27 @@ export default class Router {
     return this.instance.rtpCapabilities;
   }
 
-  public async createWebRtcTransport(transportId: string) {
-    // const router = this.routers.get(name);
-    // if (!router) throw new Error('no router!');
+  public async createWebRtcTransport(roomId: string) {
     const config = this.mediasoup.getConfig();
-    const transport = await this.instance.createWebRtcTransport({
-      enableUdp: true,
-      enableTcp: true,
-      preferUdp: true,
-      listenIps: config.listenIps,
-      initialAvailableOutgoingBitrate: config.initialAvailableOutgoingBitrate,
-      appData: {transportId},
-    });
+    const transport = new Transport(
+      this.mediasoup,
+      await this.instance.createWebRtcTransport({
+        enableUdp: true,
+        enableTcp: true,
+        preferUdp: true,
+        listenIps: config.listenIps,
+        initialAvailableOutgoingBitrate: config.initialAvailableOutgoingBitrate,
+        appData: {roomId},
+      }),
+    );
     this.transports.push(transport);
-    const {id, iceCandidates, iceParameters, dtlsParameters} = transport;
-    return {id, iceCandidates, iceParameters, dtlsParameters};
+    const transportOptions = {
+      id: transport.id,
+      iceCandidates: transport.iceCandidates,
+      iceParameters: transport.iceParameters,
+      dtlsParameters: transport.iceParameters,
+    };
+    return transportOptions;
   }
 
   public get roomId() {

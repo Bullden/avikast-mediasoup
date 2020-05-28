@@ -21,11 +21,11 @@ export default class MediasoupManager extends IMediasoupManager {
   }
 
   async connectTransport(roomId: string, dtlsParameters: DtlsParameters) {
-    const router = await this.mediasoup.findRouterByRoomId('roomId');
+    const router = await this.mediasoup.findRouterByRoomId(roomId);
     if (!router) throw new Error(`cannot find router by roomId ${roomId}`);
-    const transport = await router.findTransportByRoomId('roomId');
+    const transport = await router.findTransportByRoomId(roomId);
     if (!transport) throw new Error(`cannot find router by roomId ${transport}`);
-    transport.connect({dtlsParameters}); // TODO почему не инстанс?
+    await transport.connectToRouter(dtlsParameters);
     return true;
   }
 }
