@@ -6,6 +6,10 @@ import {
   CreateTransportRequest,
   CreateTransportResponse,
 } from './entities/CreateTransport';
+import {
+  ConnectTransportRequest,
+  ConnectTransportResponse,
+} from './entities/ConnectTransport';
 
 @Controller()
 export default class MediasoupController {
@@ -28,5 +32,14 @@ export default class MediasoupController {
       iceCandidates: transport.iceParameters,
       iceParameters: transport.iceParameters,
     };
+  }
+
+  @MessagePattern({area: 'transport', action: 'connect'})
+  async connectTransport(request: ConnectTransportRequest): Promise<boolean> {
+    console.log(request.dtlsParameters);
+    await this.roomManager.connectTransport(request.roomId, request.dtlsParameters);
+    return true;
+    // const router = await this.roomManager.createRouter(request.roomId);
+    // return {rtpCapabilities: router.rtpCapabilities};
   }
 }

@@ -1,7 +1,10 @@
 import {types} from 'mediasoup';
 import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
+import {Transport} from 'mediasoup/lib/Transport';
 
 export default class Router {
+  private readonly transports: Array<Transport> = [];
+
   constructor(
     private readonly mediasoup: IMediasoupInternal,
     private readonly instance: types.Router,
@@ -10,12 +13,6 @@ export default class Router {
   public get rtpCapabilities(): types.RtpCapabilities {
     return this.instance.rtpCapabilities;
   }
-
-  // public async createTransport(
-  //   parameters: WebRtcTransportOptions,
-  // ): Promise<types.WebRtcTransport> {
-  //   return this.instance.createWebRtcTransport(parameters);
-  // }
 
   public async createWebRtcTransport(transportId: string) {
     // const router = this.routers.get(name);
@@ -29,11 +26,19 @@ export default class Router {
       initialAvailableOutgoingBitrate: config.initialAvailableOutgoingBitrate,
       appData: {transportId},
     });
+    this.transports.push(transport);
     const {id, iceCandidates, iceParameters, dtlsParameters} = transport;
     return {id, iceCandidates, iceParameters, dtlsParameters};
   }
 
   public get roomId() {
     return this.instance.appData.roomId;
+  }
+
+  public findTransportByRoomId(roomId: string) {
+    for (const transport of this.transports) {
+      if (transport.appData.roomId === roomId) return transport;
+    }
+    return undefined;
   }
 }
