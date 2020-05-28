@@ -7,4 +7,8 @@ export default class Router {
   public get rtpCapabilities(): types.RtpCapabilities {
     return this.instance.rtpCapabilities;
   }
+
+  public get getRouter(): types.Router {
+    return this.instance;
+  }
 }

@@ -12,4 +12,8 @@ export default class MediasoupManager extends IMediasoupManager {
     const router = await this.mediasoup.createRouter();
     return {rtpCapabilities: router.rtpCapabilities};
   }
+
+  async createTransport(name: string) {
+    return this.mediasoup.createTransport(name);
+  }
 }

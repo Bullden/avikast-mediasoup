@@ -1,4 +1,6 @@
 import {MessagePattern as NestMessagePattern} from '@nestjs/microservices';
-import {Pattern} from 'api/entities';
+import {CreateRouterPattern} from 'api/entities/CreateRouter';
+import {CreateTransportPattern} from 'api/entities/CreateTransport';
 
-export const MessagePattern = (pattern: Pattern) => NestMessagePattern(pattern);
+export const MessagePattern = (pattern: CreateRouterPattern | CreateTransportPattern) =>
+  NestMessagePattern(pattern);
