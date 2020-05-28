@@ -19,7 +19,7 @@ export default class MediasoupController {
     return {rtpCapabilities: router.rtpCapabilities};
   }
 
-  @MessagePattern({area: 'transport', action: 'create'}, response)
+  @MessagePattern({area: 'transport', action: 'create'})
   async createTransport(
     request: CreateTransportRequest,
   ): Promise<CreateTransportResponse> {

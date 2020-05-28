@@ -42,9 +42,9 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
   }
 
   // eslint-disable-next-line class-methods-use-this
-  public async connectTransport(dtlsParameters: DtlsParameters, transport: Transport) {
-    await transport.connect({dtlsParameters});
-  }
+  // public async connectTransport(dtlsParameters: DtlsParameters, transport: Transport) {
+  //   await transport.connect({dtlsParameters});
+  // }
 
   getConfig(): MediasoupConfig {
     return this.config;
