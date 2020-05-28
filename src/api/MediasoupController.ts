@@ -35,11 +35,12 @@ export default class MediasoupController {
   }
 
   @MessagePattern({area: 'transport', action: 'connect'})
-  async connectTransport(request: ConnectTransportRequest): Promise<boolean> {
+  async connectTransport(
+    request: ConnectTransportRequest,
+  ): Promise<ConnectTransportResponse> {
+    // eslint-disable-next-line no-console
     console.log(request.dtlsParameters);
     await this.roomManager.connectTransport(request.roomId, request.dtlsParameters);
-    return true;
-    // const router = await this.roomManager.createRouter(request.roomId);
-    // return {rtpCapabilities: router.rtpCapabilities};
+    return {};
   }
 }

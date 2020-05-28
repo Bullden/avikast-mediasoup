@@ -10,6 +10,4 @@ export interface ConnectTransportRequest {
   dtlsParameters: DtlsParameters;
 }
 
-export interface ConnectTransportResponse {
-  result: boolean;
-}
+export interface ConnectTransportResponse {}
