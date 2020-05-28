@@ -35,20 +35,10 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
     return router;
   }
 
-  public async createTransport(name: string) {
+  public getRouterByName(name: string) {
     const router = this.routers.get(name);
-    if (!router) throw new Error('no router!');
-    const config = this.getConfig();
-    const transport = await router.createTransport({
-      enableUdp: true,
-      enableTcp: true,
-      preferUdp: true,
-      listenIps: config.listenIps,
-      initialAvailableOutgoingBitrate: config.initialAvailableOutgoingBitrate,
-      appData: {name},
-    });
-    const {id, iceCandidates, iceParameters, dtlsParameters} = transport;
-    return {id, iceCandidates, iceParameters, dtlsParameters};
+    if (!router) throw new Error(`router ${name} foes not exist`);
+    return router;
   }
 
   // eslint-disable-next-line class-methods-use-this

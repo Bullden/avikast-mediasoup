@@ -7,8 +7,12 @@ export default abstract class IMediasoup {
 
   abstract createTransport(name: string): Promise<TransportOptions>;
 
-  abstract connectTransport(
-    dtlsParameters: DtlsParameters,
-    transport: Transport,
-  ): Promise<void>;
+  abstract createTransport(name: string): Promise<TransportOptions>;
+
+  abstract getRouterByName(name: string): Router;
+
+  // abstract connectTransport(
+  //   dtlsParameters: DtlsParameters,
+  //   transport: Transport,
+  // ): Promise<void>;
 }
