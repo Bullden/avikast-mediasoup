@@ -8,13 +8,14 @@ export default class MediasoupManager extends IMediasoupManager {
     super();
   }
 
-  async createRouter() {
-    const router = await this.mediasoup.createRouter();
+  async createRouter(roomId: string) {
+    const router = await this.mediasoup.createRouter(roomId);
     return {rtpCapabilities: router.rtpCapabilities};
   }
 
-  async createTransport(transportId: string) {
-    const router = await this.mediasoup.getRouterByName(transportId);
-    return router.createWebRtcTransport(transportId);
+  async createTransport(roomId: string) {
+    const router = await this.mediasoup.findRouterByRoomId(roomId);
+    if (!router) throw new Error('Router not found');
+    return router.createWebRtcTransport(roomId);
   }
 }

@@ -32,4 +32,8 @@ export default class Router {
     const {id, iceCandidates, iceParameters, dtlsParameters} = transport;
     return {id, iceCandidates, iceParameters, dtlsParameters};
   }
+
+  public get roomId() {
+    return this.instance.appData.roomId;
+  }
 }

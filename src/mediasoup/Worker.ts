@@ -12,12 +12,12 @@ export default class Worker {
     this.instance = instance;
   }
 
-  public async createRouter() {
+  public async createRouter(roomId: string) {
     const config = this.mediasoup.getConfig();
     const {mediaCodecs} = config;
     const router = new Router(
       this.mediasoup,
-      await this.instance.createRouter({mediaCodecs}),
+      await this.instance.createRouter({mediaCodecs, appData: {roomId}}),
     );
     this._routers.push(router);
     return router;
@@ -25,5 +25,13 @@ export default class Worker {
 
   public get routers() {
     return [...this._routers];
+  }
+
+  public findRouterByRoomId(roomId: string) {
+    for (const router of this.routers) {
+      if (router.roomId === roomId) return router;
+    }
+
+    return undefined;
   }
 }

@@ -13,9 +13,7 @@ export default class MediasoupController {
 
   @MessagePattern({area: 'router', action: 'create'})
   async createRouter(request: CreateRouterRequest): Promise<CreateRouterResponse> {
-    // eslint-disable-next-line no-console
-    console.log(request);
-    const router = await this.roomManager.createRouter();
+    const router = await this.roomManager.createRouter(request.roomId);
     return {rtpCapabilities: router.rtpCapabilities};
   }
 
@@ -23,9 +21,12 @@ export default class MediasoupController {
   async createTransport(
     request: CreateTransportRequest,
   ): Promise<CreateTransportResponse> {
-    // eslint-disable-next-line no-console
-    console.log(request);
-    const transportOptions = await this.roomManager.createTransport(request.name);
-    return {transportOptions};
+    const transport = await this.roomManager.createTransport(request.roomId);
+    return {
+      id: transport.id,
+      dtlsParameters: transport.dtlsParameters,
+      iceCandidates: transport.iceParameters,
+      iceParameters: transport.iceParameters,
+    };
   }
 }

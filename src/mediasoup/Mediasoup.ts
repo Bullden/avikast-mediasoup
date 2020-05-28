@@ -1,18 +1,19 @@
 import {createWorker} from 'mediasoup';
 import IMediasoup from './IMediasoup';
 import Worker from './Worker';
-import Router from './Router';
 import MediasoupConfig from 'mediasoup/MediasoupConfig';
 import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
-import {DtlsParameters, Transport} from 'mediasoup/lib/types';
 
 export default class Mediasoup extends IMediasoup implements IMediasoupInternal {
   private readonly workers: Array<Worker> = [];
 
-  private readonly routers: Map<string, Router> = new Map<string, Router>();
-
   constructor(private readonly config: MediasoupConfig) {
     super();
+  }
+
+  public async createRouter(roomId: string) {
+    const worker = this.findBestWorker();
+    return worker.createRouter(roomId);
   }
 
   private findBestWorker(): Worker {
@@ -27,18 +28,15 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
     return worker;
   }
 
-  public async createRouter() {
-    const worker = await this.findBestWorker();
-    const router = await worker.createRouter();
-    if (!router) throw new Error('no router!');
-    this.routers.set('test', router);
-    return router;
-  }
+  public findRouterByRoomId(roomId: string) {
+    for (const worker of this.workers) {
+      const router = worker.findRouterByRoomId(roomId);
+      if (router) {
+        return router;
+      }
+    }
 
-  public getRouterByName(name: string) {
-    const router = this.routers.get(name);
-    if (!router) throw new Error(`router ${name} foes not exist`);
-    return router;
+    return undefined;
   }
 
   // eslint-disable-next-line class-methods-use-this
