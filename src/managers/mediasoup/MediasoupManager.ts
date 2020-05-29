@@ -23,6 +23,7 @@ export default class MediasoupManager extends IMediasoupManager {
   async connectTransport(roomId: string, dtlsParameters: DtlsParameters) {
     const transport = this.findTransportByRoomId(roomId);
     await transport.connectToRouter(dtlsParameters);
+    console.log(transport.id, 'connectTransport');
     return true;
   }
 
@@ -41,6 +42,7 @@ export default class MediasoupManager extends IMediasoupManager {
     rtpParameters: RtpParameters,
   ) {
     const transport = this.findTransportByRoomId(roomId);
+    console.log(transport.id, 'SEND TRACK');
     return transport.createProducer(transportId, roomId, kind, rtpParameters);
   }
 
