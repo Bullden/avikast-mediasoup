@@ -1,8 +1,11 @@
+// eslint-disable-next-line no-console
 import {types} from 'mediasoup';
 import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
 import {DtlsParameters} from 'mediasoup/lib/WebRtcTransport';
 import Producer from './Producer';
-import {RtpParameters} from 'mediasoup/lib/RtpParameters';
+import Consumer from './Consumer';
+import {RtpCapabilities, RtpParameters} from 'mediasoup/lib/RtpParameters';
+import ConsumerOptions from '../entities/ConsumerOptions';
 
 export default class WebRtcTransport {
   constructor(
@@ -55,5 +58,26 @@ export default class WebRtcTransport {
     );
     console.log(producer.id, 'PRODUCERID');
     return producer.id;
+  }
+
+  public async createConsumer(
+    producerId: string,
+    roomId: string,
+    rtpCapabilities: RtpCapabilities,
+  ): Promise<ConsumerOptions> {
+    const consumer = new Consumer(
+      this.mediasoup,
+      await this.instance.consume({
+        producerId,
+        rtpCapabilities,
+        appData: {roomId},
+      }),
+    );
+    console.log(consumer.id, 'Consumer');
+    return {
+      id: consumer.id,
+      producerId: consumer.producerId,
+      rtpParameters: consumer.rtpParameters,
+    };
   }
 }

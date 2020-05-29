@@ -1,6 +1,7 @@
 import Router from 'entities/Router';
 import TransportOptions from '../../entities/TransportOptions';
-import {DtlsParameters, RtpParameters} from 'mediasoup/lib/types';
+import {DtlsParameters, RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
+import ConsumerOptions from '../../entities/ConsumerOptions';
 
 export default abstract class IMediasoupManager {
   abstract createRouter(roomId: string): Promise<Router>;
@@ -18,4 +19,10 @@ export default abstract class IMediasoupManager {
     kind: string,
     rtpParameters: RtpParameters,
   ): Promise<string>;
+
+  abstract createConsumer(
+    producerId: string,
+    roomId: string,
+    rtpCapabilities: RtpCapabilities,
+  ): Promise<ConsumerOptions>;
 }

@@ -1,7 +1,7 @@
 import IMediasoupManager from 'managers/mediasoup/IMediasoupManager';
 import {Injectable} from '@nestjs/common';
 import IMediasoup from 'mediasoup/IMediasoup';
-import {DtlsParameters, RtpParameters} from 'mediasoup/lib/types';
+import {DtlsParameters, RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
 
 @Injectable()
 export default class MediasoupManager extends IMediasoupManager {
@@ -42,5 +42,14 @@ export default class MediasoupManager extends IMediasoupManager {
   ) {
     const transport = this.findTransportByRoomId(roomId);
     return transport.createProducer(transportId, roomId, kind, rtpParameters);
+  }
+
+  async createConsumer(
+    producerId: string,
+    roomId: string,
+    rtpCapabilities: RtpCapabilities,
+  ) {
+    const transport = this.findTransportByRoomId(roomId);
+    return transport.createConsumer(producerId, roomId, rtpCapabilities);
   }
 }

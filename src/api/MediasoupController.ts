@@ -11,6 +11,7 @@ import {
   ConnectTransportResponse,
 } from './entities/ConnectTransport';
 import {SendTrackRequest, SendTrackResponse} from './entities/SendTrack';
+import {CreateConsumerRequest, CreateConsumerResponse} from './entities/CreateConsumer';
 
 @Controller()
 export default class MediasoupController {
@@ -47,7 +48,7 @@ export default class MediasoupController {
   @MessagePattern({area: 'track', action: 'send'})
   async sendTrack(request: SendTrackRequest): Promise<SendTrackResponse> {
     // eslint-disable-next-line no-console
-    console.log(11111111111);
+    console.log('sendTrack');
     const {transportId, roomId, kind, rtpParameters} = request;
     const producerId = await this.roomManager.sendTrack(
       transportId,
@@ -56,5 +57,22 @@ export default class MediasoupController {
       rtpParameters,
     );
     return {producerId};
+  }
+
+  @MessagePattern({area: 'consumer', action: 'create'})
+  async createConsumer(request: CreateConsumerRequest): Promise<CreateConsumerResponse> {
+    // eslint-disable-next-line no-console
+    console.log('createConsumer');
+    const {producerId, roomId, rtpCapabilities} = request;
+    const consumerOptions = await this.roomManager.createConsumer(
+      producerId,
+      roomId,
+      rtpCapabilities,
+    );
+    return {
+      id: consumerOptions.id,
+      producerId: consumerOptions.producerId,
+      rtpParameters: consumerOptions.rtpParameters,
+    };
   }
 }
