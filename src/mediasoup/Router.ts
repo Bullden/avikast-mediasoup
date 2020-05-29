@@ -28,13 +28,7 @@ export default class Router {
       }),
     );
     this.transports.push(transport);
-    const transportOptions = {
-      id: transport.id,
-      iceCandidates: transport.iceCandidates,
-      iceParameters: transport.iceParameters,
-      dtlsParameters: transport.iceParameters,
-    };
-    return transportOptions;
+    return transport;
   }
 
   public get roomId() {

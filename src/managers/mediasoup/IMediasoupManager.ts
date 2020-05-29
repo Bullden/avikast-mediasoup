@@ -1,6 +1,6 @@
 import Router from 'entities/Router';
 import TransportOptions from '../../entities/TransportOptions';
-import {DtlsParameters} from 'mediasoup/lib/WebRtcTransport';
+import {DtlsParameters, RtpParameters} from 'mediasoup/lib/types';
 
 export default abstract class IMediasoupManager {
   abstract createRouter(roomId: string): Promise<Router>;
@@ -11,4 +11,11 @@ export default abstract class IMediasoupManager {
     roomId: string,
     dtlsParameters: DtlsParameters,
   ): Promise<Boolean>;
+
+  abstract sendTrack(
+    transportId: string,
+    roomId: string,
+    kind: string,
+    rtpParameters: RtpParameters,
+  ): Promise<string>;
 }
