@@ -1,4 +1,4 @@
-import {RtpParameters, MediaKind} from 'mediasoup/lib/RtpParameters';
+import {RtpParameters, MediaKind} from 'mediasoup/lib/types';
 
 export default interface ProducerOptions {
   roomId: string;

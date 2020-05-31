@@ -1,7 +1,7 @@
 import {Module} from '@nestjs/common';
 import {MediasoupModule} from 'mediasoup/MediasoupModule';
-import IMediasoupManager from 'managers/mediasoup/IMediasoupManager';
-import MediasoupManager from 'managers/mediasoup/MediasoupManager';
+import IMediasoupManager from './mediasoup/IMediasoupManager';
+import MediasoupManager from './mediasoup/MediasoupManager';
 
 @Module({
   imports: [

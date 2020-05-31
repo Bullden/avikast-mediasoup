@@ -1,5 +1,5 @@
-import IMediasoupManager from 'managers/mediasoup/IMediasoupManager';
 import {Injectable} from '@nestjs/common';
+import IMediasoupManager from './IMediasoupManager';
 import IMediasoup from 'mediasoup/IMediasoup';
 import {DtlsParameters, RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
 
