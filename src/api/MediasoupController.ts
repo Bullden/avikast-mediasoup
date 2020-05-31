@@ -58,13 +58,13 @@ export default class MediasoupController {
     // eslint-disable-next-line no-console
     console.log('sendTrack');
     const {transportId, roomId, kind, rtpParameters} = request;
-    const producerId = await this.roomManager.sendTrack(
+    const {id} = await this.roomManager.sendTrack(
       transportId,
       roomId,
       kind,
       rtpParameters,
     );
-    return {producerId};
+    return {producerId: id};
   }
 
   @MessagePattern({area: 'consumer', action: 'create'})
@@ -102,7 +102,9 @@ export default class MediasoupController {
     // eslint-disable-next-line no-console
     console.log('sendTrack');
     const {roomId} = request;
-    const rtpCapabilities = await this.roomManager.getRouterCapabilitiesByRoomId(roomId);
-    return {rtpCapabilities};
+    const router = await this.roomManager.findRouterByRoomId(roomId);
+    return {
+      rtpCapabilities: router.rtpCapabilities,
+    };
   }
 }

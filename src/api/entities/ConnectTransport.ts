@@ -1,4 +1,4 @@
-import {DtlsParameters} from 'mediasoup/lib/WebRtcTransport';
+import {DtlsParameters} from 'mediasoup/lib/types';
 
 export type ConnectTransportPattern = {
   area: 'transport';

@@ -1,25 +1,26 @@
-import Router from 'entities/Router';
-import TransportOptions from '../../entities/TransportOptions';
 import {DtlsParameters, RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
-import ConsumerOptions from '../../entities/ConsumerOptions';
-import ProducerOptions from '../../entities/ProducerOptions';
+import TransportOptions from 'entities/TransportOptions';
+import ConsumerOptions from 'entities/ConsumerOptions';
+import ProducerOptions from 'entities/ProducerOptions';
+import RouterOptions from 'entities/RouterOptions';
+import TrackOptions from 'entities/TrackOptions';
 
 export default abstract class IMediasoupManager {
-  abstract createRouter(roomId: string): Promise<Router>;
+  abstract createRouter(roomId: string): Promise<RouterOptions>;
 
   abstract createTransport(roomId: string): Promise<TransportOptions>;
 
   abstract connectTransport(
     roomId: string,
     dtlsParameters: DtlsParameters,
-  ): Promise<Boolean>;
+  ): Promise<void>;
 
   abstract sendTrack(
     transportId: string,
     roomId: string,
     kind: string,
     rtpParameters: RtpParameters,
-  ): Promise<string>;
+  ): Promise<TrackOptions>;
 
   abstract findProducerByRoomId(roomId: string): Promise<ProducerOptions>;
 
@@ -29,5 +30,5 @@ export default abstract class IMediasoupManager {
     rtpCapabilities: RtpCapabilities,
   ): Promise<ConsumerOptions>;
 
-  abstract getRouterCapabilitiesByRoomId(roomId: string): Promise<RtpCapabilities>;
+  abstract findRouterByRoomId(roomId: string): Promise<RouterOptions>;
 }

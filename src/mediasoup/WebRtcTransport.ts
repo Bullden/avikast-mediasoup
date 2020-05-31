@@ -5,7 +5,6 @@ import {DtlsParameters} from 'mediasoup/lib/WebRtcTransport';
 import Producer from './Producer';
 import Consumer from './Consumer';
 import {RtpCapabilities, RtpParameters} from 'mediasoup/lib/RtpParameters';
-import ConsumerOptions from '../entities/ConsumerOptions';
 
 export default class WebRtcTransport {
   private readonly producers: Array<Producer> = [];
@@ -49,7 +48,7 @@ export default class WebRtcTransport {
     roomId: string,
     kind: string,
     rtpParameters: RtpParameters,
-  ): Promise<string> {
+  ): Promise<Producer> {
     const producer = new Producer(
       this.mediasoup,
       await this.instance.produce({
@@ -59,16 +58,15 @@ export default class WebRtcTransport {
       }),
     );
     this.producers.push(producer);
-    console.log(producer.id, 'PRODUCERID');
-    return producer.id;
+    return producer;
   }
 
   public async createConsumer(
     producerId: string,
     roomId: string,
     rtpCapabilities: RtpCapabilities,
-  ): Promise<ConsumerOptions> {
-    const consumer = new Consumer(
+  ): Promise<Consumer> {
+    return new Consumer(
       this.mediasoup,
       await this.instance.consume({
         producerId,
@@ -76,12 +74,6 @@ export default class WebRtcTransport {
         appData: {roomId},
       }),
     );
-    console.log(consumer.id, 'Consumer');
-    return {
-      id: consumer.id,
-      producerId: consumer.producerId,
-      rtpParameters: consumer.rtpParameters,
-    };
   }
 
   public async findProducerByRoomId(roomId: string) {

@@ -1,6 +1,8 @@
+import {DtlsParameters, IceCandidate, IceParameters} from 'mediasoup/lib/types';
+
 export default interface TransportOptions {
   id: string;
-  iceCandidates: object;
-  iceParameters: object;
-  dtlsParameters: object;
+  iceCandidates: IceCandidate[];
+  iceParameters: IceParameters;
+  dtlsParameters: DtlsParameters;
 }
