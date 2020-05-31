@@ -13,4 +13,12 @@ export default class Producer {
   public get id() {
     return this.instance.id;
   }
+
+  public get kind() {
+    return this.instance.kind;
+  }
+
+  public get rtpParameters() {
+    return this.instance.rtpParameters;
+  }
 }

@@ -8,6 +8,8 @@ import {RtpCapabilities, RtpParameters} from 'mediasoup/lib/RtpParameters';
 import ConsumerOptions from '../entities/ConsumerOptions';
 
 export default class WebRtcTransport {
+  private readonly producers: Array<Producer> = [];
+
   constructor(
     private readonly mediasoup: IMediasoupInternal,
     private readonly instance: types.WebRtcTransport,
@@ -56,6 +58,7 @@ export default class WebRtcTransport {
         appData: {roomId},
       }),
     );
+    this.producers.push(producer);
     console.log(producer.id, 'PRODUCERID');
     return producer.id;
   }
@@ -78,6 +81,21 @@ export default class WebRtcTransport {
       id: consumer.id,
       producerId: consumer.producerId,
       rtpParameters: consumer.rtpParameters,
+    };
+  }
+
+  public async findProducerByRoomId(roomId: string) {
+    const producer = this.producers.find((producer) => {
+      return producer.roomId === roomId;
+    });
+    if (!producer) {
+      throw new Error(`producer ${producer} does not exist`);
+    }
+    return {
+      roomId: producer.roomId,
+      producerId: producer.id,
+      kind: producer.kind,
+      rtpParameters: producer.rtpParameters,
     };
   }
 }

@@ -54,4 +54,13 @@ export default class MediasoupManager extends IMediasoupManager {
     const transport = this.findTransportByRoomId(roomId);
     return transport.createConsumer(producerId, roomId, rtpCapabilities);
   }
+
+  async findProducerByRoomId(roomId: string) {
+    const router = this.mediasoup.findRouterByRoomId(roomId);
+    if (!router) throw new Error(`cannot find router by roomId ${router}`);
+    const transport = router.findTransportByRoomId(roomId);
+    if (!transport) throw new Error(`cannot find router by roomId ${transport}`);
+    const producerOptions = transport.findProducerByRoomId(roomId);
+    return producerOptions;
+  }
 }

@@ -12,6 +12,10 @@ import {
 } from './entities/ConnectTransport';
 import {SendTrackRequest, SendTrackResponse} from './entities/SendTrack';
 import {CreateConsumerRequest, CreateConsumerResponse} from './entities/CreateConsumer';
+import {
+  FindProducerByRoomIdRequest,
+  FindProducerByRoomIdResponse,
+} from './entities/FindProducerByRoomId';
 
 @Controller()
 export default class MediasoupController {
@@ -74,5 +78,16 @@ export default class MediasoupController {
       producerId: consumerOptions.producerId,
       rtpParameters: consumerOptions.rtpParameters,
     };
+  }
+
+  @MessagePattern({area: 'producer', action: 'find'})
+  async findProducerByRoomId(
+    request: FindProducerByRoomIdRequest,
+  ): Promise<FindProducerByRoomIdResponse> {
+    // eslint-disable-next-line no-console
+    console.log('sendTrack');
+    const {roomId} = request;
+    const producerOptions = await this.roomManager.findProducerByRoomId(roomId);
+    return producerOptions;
   }
 }
