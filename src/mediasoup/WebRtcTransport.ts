@@ -40,7 +40,6 @@ export default class WebRtcTransport {
   public async createProducer(
     transportId: string,
     roomId: string,
-    kind: string,
     rtpParameters: types.RtpParameters,
   ): Promise<Producer> {
     return new Producer(

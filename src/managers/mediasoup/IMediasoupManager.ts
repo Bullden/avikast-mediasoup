@@ -7,17 +7,20 @@ import RouterOptions from 'entities/RouterOptions';
 export default abstract class IMediasoupManager {
   abstract createRouter(roomId: string): Promise<RouterOptions>;
 
-  abstract createTransport(roomId: string): Promise<TransportOptions>;
+  abstract createTransport(
+    roomId: string,
+    direction: 'send' | 'receive',
+  ): Promise<TransportOptions>;
 
   abstract connectTransport(
     roomId: string,
     dtlsParameters: DtlsParameters,
+    direction: 'send' | 'receive',
   ): Promise<void>;
 
   abstract createProducer(
     transportId: string,
     roomId: string,
-    kind: string,
     rtpParameters: RtpParameters,
   ): Promise<ProducerOptions>;
 

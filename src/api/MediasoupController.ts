@@ -34,7 +34,10 @@ export default class MediasoupController {
   async createTransport(
     request: CreateTransportRequest,
   ): Promise<CreateTransportResponse> {
-    const transport = await this.roomManager.createTransport(request.roomId);
+    const transport = await this.roomManager.createTransport(
+      request.roomId,
+      request.direction,
+    );
     return {
       id: transport.id,
       dtlsParameters: transport.dtlsParameters,
@@ -50,6 +53,7 @@ export default class MediasoupController {
     await this.roomManager.connectTransport(
       request.roomId,
       request.dtlsParameters as DtlsParameters,
+      request.direction,
     );
   }
 
@@ -58,7 +62,6 @@ export default class MediasoupController {
     const {id} = await this.roomManager.createProducer(
       request.transportId,
       request.roomId,
-      request.kind,
       request.rtpParameters as RtpParameters,
     );
     return {

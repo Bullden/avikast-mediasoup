@@ -14,7 +14,7 @@ export default class Router {
     return this.instance.rtpCapabilities;
   }
 
-  public async createWebRtcTransport(roomId: string) {
+  public async createWebRtcTransport(roomId: string, direction: 'send' | 'receive') {
     const config = this.mediasoup.getConfig();
     const transport = new Transport(
       this.mediasoup,
@@ -24,7 +24,7 @@ export default class Router {
         preferUdp: true,
         listenIps: config.listenIps,
         initialAvailableOutgoingBitrate: config.initialAvailableOutgoingBitrate,
-        appData: {roomId},
+        appData: {roomId, direction},
       }),
     );
     this.transports.push(transport);
@@ -35,9 +35,13 @@ export default class Router {
     return this.instance.appData.roomId;
   }
 
-  public findTransportByRoomId(roomId: string) {
+  public findTransportByRoomId(roomId: string, direction: 'send' | 'receive') {
     for (const transport of this.transports) {
-      if (transport.appData.roomId === roomId) return transport;
+      if (
+        transport.appData.roomId === roomId &&
+        transport.appData.direction === direction
+      )
+        return transport;
     }
     return undefined;
   }
