@@ -1,5 +1,5 @@
 import {Module} from '@nestjs/common';
-import {ApiModule} from '../api/ApiModule';
+import {ApiModule} from 'api/ApiModule';
 
 @Module({
   imports: [
