@@ -1,5 +1,3 @@
-import {DtlsParameters} from 'mediasoup/lib/types';
-
 export type ConnectTransportPattern = {
   area: 'transport';
   action: 'connect';
@@ -10,4 +8,4 @@ export interface ConnectTransportRequest {
   dtlsParameters: object;
 }
 
-export interface ConnectTransportResponse {}
+export type ConnectTransportResponse = void;

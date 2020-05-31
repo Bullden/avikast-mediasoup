@@ -31,7 +31,7 @@ export default class MediasoupManager extends IMediasoupManager {
     return router.findTransportByRoomId(roomId);
   }
 
-  async sendTrack(
+  async createProducer(
     transportId: string,
     roomId: string,
     kind: string,
@@ -55,7 +55,9 @@ export default class MediasoupManager extends IMediasoupManager {
   async findProducerByRoomId(roomId: string) {
     const transport = this.findTransportByRoomId(roomId);
     if (!transport) throw new Error('Transport not found');
-    return transport.findProducerByRoomId(roomId);
+    const producer = await transport.findProducerByRoomId(roomId);
+    if (!producer) throw new Error('Producer not found');
+    return producer;
   }
 
   async findRouterByRoomId(roomId: string) {

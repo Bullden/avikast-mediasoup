@@ -38,9 +38,8 @@ export default class WebRtcTransport {
     return this.instance.appData;
   }
 
-  public async connectToRouter(dtlsParameters: DtlsParameters): Promise<boolean> {
+  public async connectToRouter(dtlsParameters: DtlsParameters): Promise<void> {
     await this.instance.connect({dtlsParameters});
-    return true;
   }
 
   public async createProducer(
@@ -77,17 +76,8 @@ export default class WebRtcTransport {
   }
 
   public async findProducerByRoomId(roomId: string) {
-    const producer = this.producers.find((producer) => {
+    return this.producers.find((producer) => {
       return producer.roomId === roomId;
     });
-    if (!producer) {
-      throw new Error(`producer ${producer} does not exist`);
-    }
-    return {
-      roomId: producer.roomId,
-      producerId: producer.id,
-      kind: producer.kind,
-      rtpParameters: producer.rtpParameters,
-    };
   }
 }

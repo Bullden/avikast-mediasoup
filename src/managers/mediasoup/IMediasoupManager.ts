@@ -3,7 +3,6 @@ import TransportOptions from 'entities/TransportOptions';
 import ConsumerOptions from 'entities/ConsumerOptions';
 import ProducerOptions from 'entities/ProducerOptions';
 import RouterOptions from 'entities/RouterOptions';
-import TrackOptions from 'entities/TrackOptions';
 
 export default abstract class IMediasoupManager {
   abstract createRouter(roomId: string): Promise<RouterOptions>;
@@ -15,12 +14,12 @@ export default abstract class IMediasoupManager {
     dtlsParameters: DtlsParameters,
   ): Promise<void>;
 
-  abstract sendTrack(
+  abstract createProducer(
     transportId: string,
     roomId: string,
     kind: string,
     rtpParameters: RtpParameters,
-  ): Promise<TrackOptions>;
+  ): Promise<ProducerOptions>;
 
   abstract findProducerByRoomId(roomId: string): Promise<ProducerOptions>;
 

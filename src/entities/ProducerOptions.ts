@@ -1,8 +1,7 @@
 import {RtpParameters, MediaKind} from 'mediasoup/lib/types';
 
 export default interface ProducerOptions {
-  roomId: string;
-  producerId: string;
+  id: string;
   kind: MediaKind;
   rtpParameters: RtpParameters;
 }
