@@ -34,4 +34,11 @@ export default class Worker {
 
     return undefined;
   }
+
+  get getRouterCapabilitiesByRoomId(roomId: string) {
+    const router = this.findRouterByRoomId(roomId);
+    const rtpCapabilities = router?.rtpCapabilities;
+    console.log(rtpCapabilities);
+    return rtpCapabilities;
+  }
 }

@@ -16,6 +16,10 @@ import {
   FindProducerByRoomIdRequest,
   FindProducerByRoomIdResponse,
 } from './entities/FindProducerByRoomId';
+import {
+  GetRouterCapabilitiesByRoomIdRequest,
+  GetRouterCapabilitiesByRoomIdResponse,
+} from './entities/GetRouterRtpCapabilities';
 
 @Controller()
 export default class MediasoupController {
@@ -89,5 +93,16 @@ export default class MediasoupController {
     const {roomId} = request;
     const producerOptions = await this.roomManager.findProducerByRoomId(roomId);
     return producerOptions;
+  }
+
+  @MessagePattern({area: 'router', action: 'get'})
+  async getRouterCapabilitiesByRoomId(
+    request: GetRouterCapabilitiesByRoomIdRequest,
+  ): Promise<GetRouterCapabilitiesByRoomIdResponse> {
+    // eslint-disable-next-line no-console
+    console.log('sendTrack');
+    const {roomId} = request;
+    const rtpCapabilities = await this.roomManager.getRouterCapabilitiesByRoomId(roomId);
+    return {rtpCapabilities};
   }
 }

@@ -5,6 +5,7 @@ import {ConnectTransportPattern} from '../entities/ConnectTransport';
 import {SendTrackPattern} from '../entities/SendTrack';
 import {CreateConsumerPattern} from '../entities/CreateConsumer';
 import {FindProducerByRoomIdPattern} from '../entities/FindProducerByRoomId';
+import {GetRouterCapabilitiesByRoomIdPattern} from '../entities/GetRouterRtpCapabilities';
 
 export const MessagePattern = (
   pattern:
@@ -13,5 +14,6 @@ export const MessagePattern = (
     | ConnectTransportPattern
     | SendTrackPattern
     | CreateConsumerPattern
-    | FindProducerByRoomIdPattern,
+    | FindProducerByRoomIdPattern
+    | GetRouterCapabilitiesByRoomIdPattern,
 ) => NestMessagePattern(pattern);
