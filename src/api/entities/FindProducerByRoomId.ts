@@ -1,5 +1,3 @@
-import {RtpParameters} from 'mediasoup/lib/RtpParameters';
-
 export type FindProducerByRoomIdPattern = {
   area: 'producer';
   action: 'find';
@@ -13,5 +11,5 @@ export interface FindProducerByRoomIdResponse {
   producerId: string;
   roomId: string;
   kind: string;
-  rtpParameters: RtpParameters;
+  rtpParameters: object;
 }

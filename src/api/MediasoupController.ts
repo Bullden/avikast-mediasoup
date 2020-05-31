@@ -20,6 +20,8 @@ import {
   GetRouterCapabilitiesByRoomIdRequest,
   GetRouterCapabilitiesByRoomIdResponse,
 } from './entities/GetRouterRtpCapabilities';
+import {DtlsParameters} from 'mediasoup/lib/WebRtcTransport';
+import {RtpParameters} from 'mediasoup/lib/RtpParameters';
 
 @Controller()
 export default class MediasoupController {
@@ -49,28 +51,30 @@ export default class MediasoupController {
     request: ConnectTransportRequest,
   ): Promise<ConnectTransportResponse> {
     // eslint-disable-next-line no-console
-    await this.roomManager.connectTransport(request.roomId, request.dtlsParameters);
+    await this.roomManager.connectTransport(
+      request.roomId,
+      request.dtlsParameters as DtlsParameters,
+    );
     return {};
   }
 
   @MessagePattern({area: 'track', action: 'send'})
   async sendTrack(request: SendTrackRequest): Promise<SendTrackResponse> {
     // eslint-disable-next-line no-console
-    console.log('sendTrack');
     const {transportId, roomId, kind, rtpParameters} = request;
     const {id} = await this.roomManager.sendTrack(
       transportId,
       roomId,
       kind,
-      rtpParameters,
+      rtpParameters as RtpParameters,
     );
+    console.log(producerId, 'MessagePattern');
     return {producerId: id};
   }
 
   @MessagePattern({area: 'consumer', action: 'create'})
   async createConsumer(request: CreateConsumerRequest): Promise<CreateConsumerResponse> {
     // eslint-disable-next-line no-console
-    console.log('createConsumer');
     const {producerId, roomId, rtpCapabilities} = request;
     const consumerOptions = await this.roomManager.createConsumer(
       producerId,
@@ -89,7 +93,6 @@ export default class MediasoupController {
     request: FindProducerByRoomIdRequest,
   ): Promise<FindProducerByRoomIdResponse> {
     // eslint-disable-next-line no-console
-    console.log('sendTrack');
     const {roomId} = request;
     const producerOptions = await this.roomManager.findProducerByRoomId(roomId);
     return producerOptions;
@@ -100,7 +103,6 @@ export default class MediasoupController {
     request: GetRouterCapabilitiesByRoomIdRequest,
   ): Promise<GetRouterCapabilitiesByRoomIdResponse> {
     // eslint-disable-next-line no-console
-    console.log('sendTrack');
     const {roomId} = request;
     const router = await this.roomManager.findRouterByRoomId(roomId);
     return {
