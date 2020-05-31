@@ -1,5 +1,5 @@
 import {types} from 'mediasoup';
-import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
+import IMediasoupInternal from './IMediasoupInternal';
 import Transport from './WebRtcTransport';
 
 export default class Router {

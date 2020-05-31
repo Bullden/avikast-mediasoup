@@ -1,14 +1,9 @@
-// eslint-disable-next-line no-console
 import {types} from 'mediasoup';
-import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
-import {DtlsParameters} from 'mediasoup/lib/WebRtcTransport';
+import IMediasoupInternal from './IMediasoupInternal';
 import Producer from './Producer';
 import Consumer from './Consumer';
-import {RtpCapabilities, RtpParameters} from 'mediasoup/lib/RtpParameters';
 
 export default class WebRtcTransport {
-  private readonly producers: Array<Producer> = [];
-
   constructor(
     private readonly mediasoup: IMediasoupInternal,
     private readonly instance: types.WebRtcTransport,
@@ -38,7 +33,7 @@ export default class WebRtcTransport {
     return this.instance.appData;
   }
 
-  public async connectToRouter(dtlsParameters: DtlsParameters): Promise<void> {
+  public async connectToRouter(dtlsParameters: types.DtlsParameters): Promise<void> {
     await this.instance.connect({dtlsParameters});
   }
 
@@ -46,9 +41,9 @@ export default class WebRtcTransport {
     transportId: string,
     roomId: string,
     kind: string,
-    rtpParameters: RtpParameters,
+    rtpParameters: types.RtpParameters,
   ): Promise<Producer> {
-    const producer = new Producer(
+    return new Producer(
       this.mediasoup,
       await this.instance.produce({
         kind: 'video',
@@ -56,14 +51,12 @@ export default class WebRtcTransport {
         appData: {roomId},
       }),
     );
-    this.producers.push(producer);
-    return producer;
   }
 
   public async createConsumer(
     producerId: string,
     roomId: string,
-    rtpCapabilities: RtpCapabilities,
+    rtpCapabilities: types.RtpCapabilities,
   ): Promise<Consumer> {
     return new Consumer(
       this.mediasoup,
@@ -73,11 +66,5 @@ export default class WebRtcTransport {
         appData: {roomId},
       }),
     );
-  }
-
-  public async findProducerByRoomId(roomId: string) {
-    return this.producers.find((producer) => {
-      return producer.roomId === roomId;
-    });
   }
 }

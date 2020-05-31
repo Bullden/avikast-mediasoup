@@ -1,4 +1,4 @@
-import Router from 'mediasoup/Router';
+import Router from './Router';
 
 export default abstract class IMediasoup {
   abstract createRouter(roomId: string): Promise<Router>;

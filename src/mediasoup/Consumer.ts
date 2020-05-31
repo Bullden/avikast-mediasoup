@@ -1,5 +1,5 @@
 import {types} from 'mediasoup';
-import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
+import IMediasoupInternal from './IMediasoupInternal';
 
 export default class Consumer {
   constructor(mediasoup: IMediasoupInternal, private readonly instance: types.Consumer) {
