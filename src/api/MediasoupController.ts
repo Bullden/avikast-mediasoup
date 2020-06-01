@@ -17,6 +17,7 @@ import {
 } from 'api/entities';
 import {DtlsParameters} from 'mediasoup/lib/WebRtcTransport';
 import {RtpParameters} from 'mediasoup/lib/RtpParameters';
+import {MediaAttributes} from 'entities/Mediasoup';
 
 @Controller()
 export default class MediasoupController {
@@ -36,7 +37,7 @@ export default class MediasoupController {
   ): Promise<CreateTransportResponse> {
     const transport = await this.roomManager.createTransport(
       request.roomId,
-      request.direction,
+      request.mediaAttributes as MediaAttributes,
     );
     return {
       id: transport.id,
@@ -53,7 +54,7 @@ export default class MediasoupController {
     await this.roomManager.connectTransport(
       request.roomId,
       request.dtlsParameters as DtlsParameters,
-      request.direction,
+      request.mediaAttributes as MediaAttributes,
     );
   }
 

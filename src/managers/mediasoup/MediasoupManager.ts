@@ -2,6 +2,7 @@ import {Injectable} from '@nestjs/common';
 import IMediasoupManager from './IMediasoupManager';
 import IMediasoup from 'mediasoup/IMediasoup';
 import {DtlsParameters, RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
+import {MediaAttributes} from 'entities/Mediasoup';
 
 @Injectable()
 export default class MediasoupManager extends IMediasoupManager {
@@ -13,18 +14,18 @@ export default class MediasoupManager extends IMediasoupManager {
     return this.mediasoup.createRouter(roomId);
   }
 
-  async createTransport(roomId: string, direction: 'send' | 'receive') {
+  async createTransport(roomId: string, mediaAttributes: MediaAttributes) {
     const router = await this.mediasoup.findRouterByRoomId(roomId);
     if (!router) throw new Error('Router not found');
-    return router.createWebRtcTransport(roomId, direction);
+    return router.createWebRtcTransport(roomId, mediaAttributes);
   }
 
   async connectTransport(
     roomId: string,
     dtlsParameters: DtlsParameters,
-    direction: 'send' | 'receive',
+    mediaAttributes: MediaAttributes,
   ) {
-    const transport = this.findTransportByRoomId(roomId, direction);
+    const transport = this.findTransport(roomId, mediaAttributes);
     if (!transport) throw new Error('Transport not found');
     await transport.connectToRouter(dtlsParameters);
   }
@@ -33,6 +34,12 @@ export default class MediasoupManager extends IMediasoupManager {
     const router = this.mediasoup.findRouterByRoomId(roomId);
     if (!router) throw new Error(`cannot find router by roomId ${roomId}`);
     return router.findTransportByRoomId(roomId, direction);
+  }
+
+  findTransport(roomId: string, mediaAttributes: MediaAttributes) {
+    const router = this.mediasoup.findRouterByRoomId(roomId);
+    if (!router) throw new Error(`cannot find router by roomId ${roomId}`);
+    return router.findTransport(roomId, mediaAttributes);
   }
 
   async createProducer(
