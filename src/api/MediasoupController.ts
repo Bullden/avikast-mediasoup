@@ -59,27 +59,29 @@ export default class MediasoupController {
 
   @MessagePattern({area: 'producer', action: 'create'})
   async createProducer(request: CreateProducerRequest): Promise<CreateProducerResponse> {
-    const {id} = await this.roomManager.createProducer(
+    const producer = await this.roomManager.createProducer(
       request.transportId,
       request.roomId,
       request.rtpParameters as RtpParameters,
     );
     return {
-      producerId: id,
+      producerId: producer.id,
+      kind: producer.kind,
+      rtpParameters: producer.rtpParameters,
     };
   }
 
   @MessagePattern({area: 'consumer', action: 'create'})
   async createConsumer(request: CreateConsumerRequest): Promise<CreateConsumerResponse> {
-    const consumerOptions = await this.roomManager.createConsumer(
+    const consumer = await this.roomManager.createConsumer(
       request.producerId,
       request.roomId,
       request.rtpCapabilities,
     );
     return {
-      id: consumerOptions.id,
-      producerId: consumerOptions.producerId,
-      rtpParameters: consumerOptions.rtpParameters,
+      id: consumer.id,
+      producerId: consumer.producerId,
+      rtpParameters: consumer.rtpParameters,
     };
   }
 
