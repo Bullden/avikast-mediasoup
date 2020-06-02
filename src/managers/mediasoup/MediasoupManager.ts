@@ -11,7 +11,7 @@ export default class MediasoupManager extends IMediasoupManager {
   }
 
   async createRouter(roomId: string) {
-    return this.mediasoup.createRouter(roomId);
+    return this.mediasoup.createRouter({roomId});
   }
 
   async createTransport(roomId: string, mediaAttributes: MediaAttributes) {

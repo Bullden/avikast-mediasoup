@@ -12,9 +12,9 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
     super();
   }
 
-  public async createRouter(roomId: string) {
+  public async createRouter(appData: Filter) {
     const worker = this.findBestWorker();
-    return worker.createRouter(roomId);
+    return worker.createRouter(appData);
   }
 
   private findBestWorker(): Worker {

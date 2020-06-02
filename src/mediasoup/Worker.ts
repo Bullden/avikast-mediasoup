@@ -14,12 +14,12 @@ export default class Worker extends BaseEntity {
     super();
   }
 
-  public async createRouter(roomId: string) {
+  public async createRouter(appData: Filter) {
     const config = this.mediasoup.getConfig();
     const {mediaCodecs} = config;
     const router = new Router(
       this.mediasoup,
-      await this.instance.createRouter({mediaCodecs, appData: {roomId}}),
+      await this.instance.createRouter({mediaCodecs, appData}),
     );
     this._routers.push(router);
     return router;

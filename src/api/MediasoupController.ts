@@ -87,7 +87,7 @@ export default class MediasoupController {
   }
 
   @MessagePattern({area: 'producer', action: 'get'})
-  async findProducer(request: GetProducerRequest): Promise<GetProducerResponse> {
+  async getProducer(request: GetProducerRequest): Promise<GetProducerResponse> {
     const producer = await this.roomManager.findProducer(request.roomId, request.userId);
     return {
       id: producer.id,
