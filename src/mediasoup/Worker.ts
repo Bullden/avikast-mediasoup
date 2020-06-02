@@ -2,6 +2,7 @@ import {types} from 'mediasoup';
 import Router from './Router';
 import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
 import {BaseEntity} from 'mediasoup/BaseEntity';
+import {Filter} from 'mediasoup/Utils';
 
 export default class Worker extends BaseEntity {
   private readonly _routers: Array<Router> = [];
@@ -28,12 +29,8 @@ export default class Worker extends BaseEntity {
     return [...this._routers];
   }
 
-  public findRouterByRoomId(roomId: string) {
-    for (const router of this.routers) {
-      if (router.roomId === roomId) return router;
-    }
-
-    return undefined;
+  public findRouter(filter: Filter) {
+    return this.routers.find((router) => router.matchAppData(filter));
   }
 
   get appData() {

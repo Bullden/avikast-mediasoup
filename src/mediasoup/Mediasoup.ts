@@ -3,6 +3,7 @@ import IMediasoup from './IMediasoup';
 import Worker from './Worker';
 import MediasoupConfig from 'mediasoup/MediasoupConfig';
 import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
+import {Filter} from 'mediasoup/Utils';
 
 export default class Mediasoup extends IMediasoup implements IMediasoupInternal {
   private readonly workers: Array<Worker> = [];
@@ -28,12 +29,10 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
     return worker;
   }
 
-  public findRouterByRoomId(roomId: string) {
+  public findRouter(filter: Filter) {
     for (const worker of this.workers) {
-      const router = worker.findRouterByRoomId(roomId);
-      if (router) {
-        return router;
-      }
+      const router = worker.findRouter(filter);
+      if (router) return router;
     }
 
     return undefined;

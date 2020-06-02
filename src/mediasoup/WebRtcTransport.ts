@@ -8,8 +8,6 @@ import {BaseEntity} from 'mediasoup/BaseEntity';
 export default class WebRtcTransport extends BaseEntity {
   private readonly producers: Array<Producer> = [];
 
-  private readonly users: Array<string> = [];
-
   constructor(
     private readonly mediasoup: IMediasoupInternal,
     private readonly instance: types.WebRtcTransport,

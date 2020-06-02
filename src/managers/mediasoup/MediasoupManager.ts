@@ -15,7 +15,7 @@ export default class MediasoupManager extends IMediasoupManager {
   }
 
   async createTransport(roomId: string, mediaAttributes: MediaAttributes) {
-    const router = await this.mediasoup.findRouterByRoomId(roomId);
+    const router = await this.mediasoup.findRouter({roomId});
     if (!router) throw new Error('Router not found');
     return router.createWebRtcTransport(roomId, mediaAttributes);
   }
@@ -31,15 +31,20 @@ export default class MediasoupManager extends IMediasoupManager {
   }
 
   findTransportByRoomId(roomId: string, direction: 'send' | 'receive') {
-    const router = this.mediasoup.findRouterByRoomId(roomId);
+    const router = this.mediasoup.findRouter({roomId});
     if (!router) throw new Error(`cannot find router by roomId ${roomId}`);
-    return router.findTransportByRoomId(roomId, direction);
+    return router.findTransport({roomId, direction});
   }
 
-  findTransport(roomId: string, mediaAttributes: MediaAttributes) {
-    const router = this.mediasoup.findRouterByRoomId(roomId);
+  findTransport(roomId: string, {direction, kind, mediaType}: MediaAttributes) {
+    const router = this.mediasoup.findRouter({roomId});
     if (!router) throw new Error(`cannot find router by roomId ${roomId}`);
-    return router.findTransport(roomId, mediaAttributes);
+    return router.findTransport({
+      roomId,
+      direction,
+      kind,
+      mediaType,
+    });
   }
 
   async createProducer(
@@ -64,7 +69,7 @@ export default class MediasoupManager extends IMediasoupManager {
   }
 
   async findRouter(roomId: string) {
-    const router = this.mediasoup.findRouterByRoomId(roomId);
+    const router = this.mediasoup.findRouter({roomId});
     if (!router) throw new Error(`cannot find router by roomId ${router}`);
     return router;
   }

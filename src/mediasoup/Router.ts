@@ -1,8 +1,9 @@
 import {types} from 'mediasoup';
 import IMediasoupInternal from './IMediasoupInternal';
 import Transport from './WebRtcTransport';
-import {Direction, MediaAttributes} from 'entities/Mediasoup';
+import {MediaAttributes} from 'entities/Mediasoup';
 import {BaseEntity} from 'mediasoup/BaseEntity';
+import {Filter} from 'mediasoup/Utils';
 
 export default class Router extends BaseEntity {
   private readonly transports: Array<Transport> = [];
@@ -39,25 +40,8 @@ export default class Router extends BaseEntity {
     return this.instance.appData.roomId;
   }
 
-  public findTransport(roomId: string, {direction, kind, mediaType}: MediaAttributes) {
-    return this.transports.find((transport) =>
-      transport.matchAppData({
-        roomId,
-        direction,
-        kind,
-        mediaType,
-      }),
-    );
-  }
-
-  public findTransportByRoomId(roomId: string, direction: Direction) {
-    // todo: refactor
-    return this.transports.find((transport) =>
-      transport.matchAppData({
-        roomId,
-        direction,
-      }),
-    );
+  public findTransport(filter: Filter) {
+    return this.transports.find((transport) => transport.matchAppData(filter));
   }
 
   get appData() {
