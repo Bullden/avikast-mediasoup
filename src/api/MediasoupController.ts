@@ -97,4 +97,12 @@ export default class MediasoupController {
       rtpParameters: producer.rtpParameters,
     };
   }
+
+  @MessagePattern({area: 'router', action: 'get'})
+  async getRouter(request: GetRouterRequest): Promise<GetRouterResponse> {
+    const router = await this.roomManager.findRouter(request.roomId);
+    return {
+      rtpCapabilities: router.rtpCapabilities,
+    };
+  }
 }
