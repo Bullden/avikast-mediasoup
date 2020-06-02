@@ -3,8 +3,9 @@ import IMediasoupInternal from './IMediasoupInternal';
 import Producer from './Producer';
 import Consumer from './Consumer';
 import {Filter, matchAppData} from 'mediasoup/Utils';
+import {BaseEntity} from 'mediasoup/BaseEntity';
 
-export default class WebRtcTransport {
+export default class WebRtcTransport extends BaseEntity {
   private readonly producers: Array<Producer> = [];
 
   private readonly users: Array<string> = [];
@@ -12,7 +13,9 @@ export default class WebRtcTransport {
   constructor(
     private readonly mediasoup: IMediasoupInternal,
     private readonly instance: types.WebRtcTransport,
-  ) {}
+  ) {
+    super();
+  }
 
   public get roomId() {
     return this.instance.appData.roomId;

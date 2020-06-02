@@ -1,15 +1,16 @@
 import {types} from 'mediasoup';
 import Router from './Router';
 import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
+import {BaseEntity} from 'mediasoup/BaseEntity';
 
-export default class Worker {
+export default class Worker extends BaseEntity {
   private readonly _routers: Array<Router> = [];
 
   public constructor(
     private readonly mediasoup: IMediasoupInternal,
     private readonly instance: types.Worker,
   ) {
-    this.instance = instance;
+    super();
   }
 
   public async createRouter(roomId: string) {
@@ -33,5 +34,9 @@ export default class Worker {
     }
 
     return undefined;
+  }
+
+  get appData() {
+    return this.instance.appData;
   }
 }

@@ -39,8 +39,6 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
     return undefined;
   }
 
-  // eslint-disable-next-line class-methods-use-this
-
   getConfig(): MediasoupConfig {
     return this.config;
   }

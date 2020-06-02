@@ -1,8 +1,10 @@
 import {types} from 'mediasoup';
 import IMediasoupInternal from './IMediasoupInternal';
+import {BaseEntity} from 'mediasoup/BaseEntity';
 
-export default class Producer {
+export default class Producer extends BaseEntity {
   constructor(mediasoup: IMediasoupInternal, private readonly instance: types.Producer) {
+    super();
     this.instance = instance;
   }
 

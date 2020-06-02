@@ -1,15 +1,18 @@
 import {types} from 'mediasoup';
 import IMediasoupInternal from './IMediasoupInternal';
 import Transport from './WebRtcTransport';
-import {MediaAttributes} from 'entities/Mediasoup';
+import {Direction, MediaAttributes} from 'entities/Mediasoup';
+import {BaseEntity} from 'mediasoup/BaseEntity';
 
-export default class Router {
+export default class Router extends BaseEntity {
   private readonly transports: Array<Transport> = [];
 
   constructor(
     private readonly mediasoup: IMediasoupInternal,
     private readonly instance: types.Router,
-  ) {}
+  ) {
+    super();
+  }
 
   public get rtpCapabilities(): types.RtpCapabilities {
     return this.instance.rtpCapabilities;
@@ -36,28 +39,28 @@ export default class Router {
     return this.instance.appData.roomId;
   }
 
-  public findTransport(roomId: string, mediaAttributes: MediaAttributes) {
-    for (const transport of this.transports) {
-      if (
-        transport.appData.roomId === roomId &&
-        transport.appData.mediaAttributes.direction === mediaAttributes.direction &&
-        transport.appData.mediaAttributes.kind === mediaAttributes.kind &&
-        transport.appData.mediaAttributes.mediaType === mediaAttributes.mediaType
-      )
-        return transport;
-    }
-    return undefined;
+  public findTransport(roomId: string, {direction, kind, mediaType}: MediaAttributes) {
+    return this.transports.find((transport) =>
+      transport.matchAppData({
+        roomId,
+        direction,
+        kind,
+        mediaType,
+      }),
+    );
   }
 
-  public findTransportByRoomId(roomId: string, direction: 'send' | 'receive') {
-    for (const transport of this.transports) {
-      // TODO should we remove this?
-      if (
-        transport.appData.roomId === roomId &&
-        transport.appData.mediaAttributes.direction === direction
-      )
-        return transport;
-    }
-    return undefined;
+  public findTransportByRoomId(roomId: string, direction: Direction) {
+    // todo: refactor
+    return this.transports.find((transport) =>
+      transport.matchAppData({
+        roomId,
+        direction,
+      }),
+    );
+  }
+
+  get appData() {
+    return this.instance.appData;
   }
 }

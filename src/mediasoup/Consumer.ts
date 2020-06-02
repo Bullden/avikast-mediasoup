@@ -1,8 +1,10 @@
 import {types} from 'mediasoup';
 import IMediasoupInternal from './IMediasoupInternal';
+import {BaseEntity} from 'mediasoup/BaseEntity';
 
-export default class Consumer {
+export default class Consumer extends BaseEntity {
   constructor(mediasoup: IMediasoupInternal, private readonly instance: types.Consumer) {
+    super();
     this.instance = instance;
   }
 
@@ -20,5 +22,9 @@ export default class Consumer {
 
   public get rtpParameters() {
     return this.instance.rtpParameters;
+  }
+
+  get appData() {
+    return this.instance.appData;
   }
 }
