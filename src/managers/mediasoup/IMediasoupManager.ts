@@ -32,7 +32,7 @@ export default abstract class IMediasoupManager {
     rtpCapabilities: RtpCapabilities,
   ): Promise<ConsumerOptions>;
 
-  abstract findRouterByRoomId(roomId: string): Promise<RouterOptions>;
+  abstract findRouter(roomId: string): Promise<RouterOptions>;
 
-  abstract findProducerId(filter: object): Promise<string>;
+  abstract findProducer(roomId: string, userId: string): Promise<ProducerOptions>;
 }
