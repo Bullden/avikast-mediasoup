@@ -1,9 +1,11 @@
 import {DtlsParameters, RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
-import TransportOptions from 'entities/TransportOptions';
-import ConsumerOptions from 'entities/ConsumerOptions';
-import ProducerOptions from 'entities/ProducerOptions';
-import RouterOptions from 'entities/RouterOptions';
-import {MediaAttributes} from 'entities/Mediasoup';
+import {
+  ConsumerOptions,
+  MediaAttributes,
+  ProducerOptions,
+  RouterOptions,
+  TransportOptions,
+} from 'entities/Mediasoup';
 
 export default abstract class IMediasoupManager {
   abstract createRouter(roomId: string): Promise<RouterOptions>;
