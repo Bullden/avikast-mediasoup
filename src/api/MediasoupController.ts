@@ -18,6 +18,7 @@ import {
 import {DtlsParameters} from 'mediasoup/lib/WebRtcTransport';
 import {RtpParameters} from 'mediasoup/lib/RtpParameters';
 import {MediaAttributes} from 'entities/Mediasoup';
+import {FindProducerRequest, FindProducerResponse} from "api/entities/FindProducer";
 
 @Controller()
 export default class MediasoupController {
@@ -63,6 +64,7 @@ export default class MediasoupController {
     const producer = await this.roomManager.createProducer(
       request.transportId,
       request.roomId,
+      request.userId
       request.rtpParameters as RtpParameters,
     );
     return {
@@ -86,13 +88,15 @@ export default class MediasoupController {
     };
   }
 
-  @MessagePattern({area: 'router', action: 'get'})
-  async getRouterCapabilitiesByRoomId(
-    request: GetRouterRequest,
-  ): Promise<GetRouterResponse> {
-    const router = await this.roomManager.findRouterByRoomId(request.roomId);
+  @MessagePattern({area: 'producer', action: 'find'})
+  async findProducer(
+    request: FindProducerRequest,
+  ): Promise<FindProducerResponse> {
+    const producerId = await this.roomManager.findProducerId(request.filter);
     return {
-      rtpCapabilities: router.rtpCapabilities,
+      producerId
     };
   }
 }
+
+

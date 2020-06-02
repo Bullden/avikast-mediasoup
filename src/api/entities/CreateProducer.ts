@@ -6,6 +6,7 @@ export type CreateProducerPattern = {
 export interface CreateProducerRequest {
   transportId: string;
   roomId: string;
+  userId: string;
   rtpParameters: object;
 }
 

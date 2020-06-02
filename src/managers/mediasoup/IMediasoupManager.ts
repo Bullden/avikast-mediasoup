@@ -22,6 +22,7 @@ export default abstract class IMediasoupManager {
   abstract createProducer(
     transportId: string,
     roomId: string,
+    userId: string,
     rtpParameters: RtpParameters,
   ): Promise<ProducerOptions>;
 
@@ -32,4 +33,6 @@ export default abstract class IMediasoupManager {
   ): Promise<ConsumerOptions>;
 
   abstract findRouterByRoomId(roomId: string): Promise<RouterOptions>;
+
+  abstract findProducerId(filter: object): Promise<string>;
 }

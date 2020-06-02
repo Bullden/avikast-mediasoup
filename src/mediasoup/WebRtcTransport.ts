@@ -2,8 +2,13 @@ import {types} from 'mediasoup';
 import IMediasoupInternal from './IMediasoupInternal';
 import Producer from './Producer';
 import Consumer from './Consumer';
+import {Filter, matchAppData} from 'mediasoup/Utils';
 
 export default class WebRtcTransport {
+  private readonly producers: Array<Producer> = [];
+
+  private readonly users: Array<string> = [];
+
   constructor(
     private readonly mediasoup: IMediasoupInternal,
     private readonly instance: types.WebRtcTransport,
@@ -39,17 +44,19 @@ export default class WebRtcTransport {
 
   public async createProducer(
     transportId: string,
-    roomId: string,
+    appData: object,
     rtpParameters: types.RtpParameters,
   ): Promise<Producer> {
-    return new Producer(
+    const producer = new Producer(
       this.mediasoup,
       await this.instance.produce({
         kind: 'video',
         rtpParameters,
-        appData: {roomId},
+        appData,
       }),
     );
+    this.producers.push(producer);
+    return producer;
   }
 
   public async createConsumer(
@@ -65,5 +72,12 @@ export default class WebRtcTransport {
         appData: {roomId},
       }),
     );
+  }
+
+  public findProducer(filter: Filter) {
+    for (const producer of this.producers) {
+      if (matchAppData(producer.appData, filter)) return producer;
+    }
+    return undefined;
   }
 }

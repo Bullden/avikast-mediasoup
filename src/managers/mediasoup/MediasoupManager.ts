@@ -45,11 +45,12 @@ export default class MediasoupManager extends IMediasoupManager {
   async createProducer(
     transportId: string,
     roomId: string,
+    userId: string,
     rtpParameters: RtpParameters,
   ) {
     const transport = this.findTransportByRoomId(roomId, 'send'); // todo: refactor
     if (!transport) throw new Error('Transport not found');
-    return transport.createProducer(transportId, roomId, rtpParameters);
+    return transport.createProducer(transportId, {roomId, userId}, rtpParameters);
   }
 
   async createConsumer(
@@ -66,5 +67,14 @@ export default class MediasoupManager extends IMediasoupManager {
     const router = this.mediasoup.findRouterByRoomId(roomId);
     if (!router) throw new Error(`cannot find router by roomId ${router}`);
     return router;
+  }
+
+  async findProducerId(filter: object) {
+    // @ts-ignore
+    const transport = this.findTransportByRoomId(filter.roomId, filter.direction);
+    if (!transport) throw new Error(`cannot find transport by transport ${transport}`);
+    const producer = transport?.findProducer(filter);
+    if (!producer) throw new Error(`cannot find producer by producer ${producer}`);
+    return producer.id;
   }
 }

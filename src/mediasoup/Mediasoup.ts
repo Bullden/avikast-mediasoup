@@ -39,6 +39,10 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
     return undefined;
   }
 
+  async findProducer(filter: object) {
+    const transport;
+  }
+
   // async findProducerByRoomId(roomId: string) {
   //   const room = this.findRouterByRoomId(roomId);
   //   if (!room) throw new Error('room not exists');

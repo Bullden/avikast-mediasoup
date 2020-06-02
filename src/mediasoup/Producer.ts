@@ -18,6 +18,10 @@ export default class Producer {
     return this.instance.kind;
   }
 
+  public get appData() {
+    return this.instance.appData;
+  }
+
   public get rtpParameters() {
     return this.instance.rtpParameters;
   }
