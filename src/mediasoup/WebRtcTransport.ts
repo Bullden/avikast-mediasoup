@@ -65,7 +65,6 @@ export default class WebRtcTransport extends BaseEntity {
     roomId: string,
     rtpCapabilities: types.RtpCapabilities,
   ): Promise<Consumer> {
-    console.log(rtpCapabilities, 'rtpCapabilities createConsumer');
     return new Consumer(
       this.mediasoup,
       await this.instance.consume({
