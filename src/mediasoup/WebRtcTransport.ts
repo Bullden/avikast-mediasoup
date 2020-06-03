@@ -52,6 +52,7 @@ export default class WebRtcTransport extends BaseEntity {
       this.mediasoup,
       await this.instance.produce({
         kind: 'video',
+        paused: false,
         rtpParameters,
         appData,
       }),
@@ -69,6 +70,7 @@ export default class WebRtcTransport extends BaseEntity {
       this.mediasoup,
       await this.instance.consume({
         producerId,
+        paused: false,
         rtpCapabilities,
         appData: {roomId},
       }),
