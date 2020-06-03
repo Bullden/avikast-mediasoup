@@ -14,10 +14,15 @@ export default class MediasoupManager extends IMediasoupManager {
     return this.mediasoup.createRouter({roomId});
   }
 
-  async createTransport(roomId: string, mediaAttributes: MediaAttributes) {
+  async createTransport(roomId: string, {direction, kind, mediaType}: MediaAttributes) {
     const router = await this.mediasoup.findRouter({roomId});
     if (!router) throw new Error('Router not found');
-    return router.createWebRtcTransport(roomId, mediaAttributes);
+    return router.createWebRtcTransport(roomId, {
+      roomId,
+      direction,
+      kind,
+      mediaType,
+    });
   }
 
   async connectTransport(

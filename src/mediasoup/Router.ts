@@ -1,7 +1,6 @@
 import {types} from 'mediasoup';
 import IMediasoupInternal from './IMediasoupInternal';
 import Transport from './WebRtcTransport';
-import {MediaAttributes} from 'entities/Mediasoup';
 import {BaseEntity} from 'mediasoup/BaseEntity';
 import {Filter} from 'mediasoup/Utils';
 
@@ -19,7 +18,7 @@ export default class Router extends BaseEntity {
     return this.instance.rtpCapabilities;
   }
 
-  public async createWebRtcTransport(roomId: string, mediaAttributes: MediaAttributes) {
+  public async createWebRtcTransport(roomId: string, appData: Filter) {
     const config = this.mediasoup.getConfig();
     const transport = new Transport(
       this.mediasoup,
@@ -29,7 +28,7 @@ export default class Router extends BaseEntity {
         preferUdp: true,
         listenIps: config.listenIps,
         initialAvailableOutgoingBitrate: config.initialAvailableOutgoingBitrate,
-        appData: {roomId, mediaAttributes},
+        appData,
       }),
     );
     this.transports.push(transport);
