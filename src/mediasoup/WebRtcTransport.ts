@@ -45,14 +45,13 @@ export default class WebRtcTransport extends BaseEntity {
 
   public async createProducer(
     transportId: string,
-    appData: object,
     rtpParameters: types.RtpParameters,
+    appData: object,
   ): Promise<Producer> {
     const producer = new Producer(
       this.mediasoup,
       await this.instance.produce({
         kind: 'video',
-        paused: false,
         rtpParameters,
         appData,
       }),
@@ -63,16 +62,15 @@ export default class WebRtcTransport extends BaseEntity {
 
   public async createConsumer(
     producerId: string,
-    roomId: string,
     rtpCapabilities: types.RtpCapabilities,
+    appData: object,
   ): Promise<Consumer> {
     return new Consumer(
       this.mediasoup,
       await this.instance.consume({
         producerId,
-        paused: false,
         rtpCapabilities,
-        appData: {roomId},
+        appData,
       }),
     );
   }
