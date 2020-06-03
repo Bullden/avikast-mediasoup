@@ -18,7 +18,7 @@ export default class Router extends BaseEntity {
     return this.instance.rtpCapabilities;
   }
 
-  public async createWebRtcTransport(roomId: string, appData: Filter) {
+  public async createWebRtcTransport(appData: Filter) {
     const config = this.mediasoup.getConfig();
     const transport = new Transport(
       this.mediasoup,

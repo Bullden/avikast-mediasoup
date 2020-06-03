@@ -17,7 +17,7 @@ export default class MediasoupManager extends IMediasoupManager {
   async createTransport(roomId: string, {direction, kind, mediaType}: MediaAttributes) {
     const router = await this.mediasoup.findRouter({roomId});
     if (!router) throw new Error('Router not found');
-    return router.createWebRtcTransport(roomId, {
+    return router.createWebRtcTransport({
       roomId,
       direction,
       kind,
@@ -68,7 +68,7 @@ export default class MediasoupManager extends IMediasoupManager {
     roomId: string,
     rtpCapabilities: RtpCapabilities,
   ) {
-    const transport = this.findTransportByRoomId(roomId, 'receive'); // todo: refactor
+    const transport = this.findTransportByRoomId(roomId, 'receive');
     if (!transport) throw new Error('Transport not found');
     return transport.createConsumer(producerId, roomId, rtpCapabilities);
   }
