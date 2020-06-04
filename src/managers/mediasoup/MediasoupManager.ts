@@ -96,8 +96,8 @@ export default class MediasoupManager extends IMediasoupManager {
   ) {
     const transport = this.findTransportByRoomId(roomId, 'receive');
     if (!transport) throw new Error('Transport not found');
-    const consumer = this.findConsumer(roomId, userId, userId);
-    if (consumer) return consumer;
+    // const consumer = this.findConsumer(roomId, userId, userId);
+    // if (consumer) return consumer;
     return transport.createConsumer(producerId, rtpCapabilities, {
       roomId,
       clientId,
@@ -114,7 +114,7 @@ export default class MediasoupManager extends IMediasoupManager {
   async findProducer(roomId: string, userId: string) {
     const transport = this.findTransportByRoomId(roomId, 'send');
     if (!transport) throw new Error(`cannot find transport by transport ${transport}`);
-    const producer = transport.findProducer({userId, roomId});
+    const producer = transport.findProducer({roomId});
     if (!producer) throw new Error(`cannot find producer by userId ${userId}`);
     return producer;
   }
@@ -124,6 +124,7 @@ export default class MediasoupManager extends IMediasoupManager {
     const transports = router.getTransports();
     const producers: ProducerOptions[] = [];
     transports.forEach((transport) => producers.push(...transport.producers));
+    console.log(producers, 'PRODUCERS LIST');
     if (!producers) throw new Error(`cno producer onthis router.roomId ${router.roomId}`);
     return producers;
   }
