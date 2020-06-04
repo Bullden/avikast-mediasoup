@@ -13,6 +13,7 @@ export default abstract class IMediasoupManager {
 
   abstract createTransport(
     roomId: string,
+    userId: string,
     direction: 'send' | 'receive',
     clientId: string,
   ): Promise<TransportOptions>;
@@ -33,8 +34,8 @@ export default abstract class IMediasoupManager {
   ): Promise<ProducerOptions>;
 
   abstract createConsumer(
-    producerId: string,
     roomId: string,
+    producerId: string,
     rtpCapabilities: object,
     clientId: string,
     userId: string,

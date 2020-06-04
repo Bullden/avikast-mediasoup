@@ -7,6 +7,7 @@ export type CreateTransportPattern = {
 
 export interface CreateTransportRequest {
   roomId: string;
+  userId: string;
   direction: Direction;
   clientId: string;
 }

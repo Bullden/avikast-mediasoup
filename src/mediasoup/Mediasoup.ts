@@ -14,7 +14,9 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
 
   public async createRouter(appData: Filter) {
     const worker = this.findBestWorker();
-    return worker.createRouter(appData);
+    const router = await worker.createRouter(appData);
+    console.log('router created', router.appData);
+    return router;
   }
 
   private findBestWorker(): Worker {
@@ -30,11 +32,11 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
   }
 
   public findRouter(filter: Filter) {
+    console.log('Find router', filter);
     for (const worker of this.workers) {
       const router = worker.findRouter(filter);
       if (router) return router;
     }
-
     return undefined;
   }
 

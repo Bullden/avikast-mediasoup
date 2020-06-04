@@ -38,11 +38,20 @@ export default class MediasoupController {
   async createTransport(
     request: CreateTransportRequest,
   ): Promise<CreateTransportResponse> {
+    console.log(
+      request.roomId,
+      request.userId,
+      request.direction,
+      request.clientId,
+      'RESPONSE',
+    );
     const transport = await this.roomManager.createTransport(
       request.roomId,
+      request.userId,
       request.direction,
       request.clientId,
     );
+
     return {
       id: transport.id,
       dtlsParameters: transport.dtlsParameters,

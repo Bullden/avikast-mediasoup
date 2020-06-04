@@ -32,6 +32,7 @@ export default class Router extends BaseEntity {
         appData,
       }),
     );
+    console.log(`transport created  ${transport.appData.direction}`);
     this.transports.push(transport);
     return transport;
   }
@@ -45,6 +46,7 @@ export default class Router extends BaseEntity {
   }
 
   public findTransport(filter: Filter) {
+    console.log(filter, 'find transport');
     return this.transports.find((transport) => transport.matchAppData(filter));
   }
 

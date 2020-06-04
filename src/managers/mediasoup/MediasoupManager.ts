@@ -15,14 +15,18 @@ export default class MediasoupManager extends IMediasoupManager {
     return this.mediasoup.createRouter({roomId});
   }
 
-  async createTransport(roomId: string, direction: 'send' | 'receive', clientId: string) {
+  async createTransport(
+    roomId: string,
+    userId: string,
+    direction: 'send' | 'receive',
+    clientId: string,
+  ) {
     const router = await this.mediasoup.findRouter({roomId});
-    if (!router) throw new Error('Router not found');
+    console.log('createTransport', router, roomId);
     const transport = this.findTransport(roomId, direction, clientId);
-    if (transport)
-      throw new Error(
-        `Transport by client id ${transport.appData.clientId} has been created already`,
-      );
+    console.log(roomId, direction, clientId, 'transport');
+    if (!transport) throw new Error(`Transport by client id ${clientId} not found`);
+    if (!router) throw new Error('Router not found');
     return router.createWebRtcTransport({
       roomId,
       direction,
@@ -37,7 +41,7 @@ export default class MediasoupManager extends IMediasoupManager {
     clientId: string,
   ) {
     const transport = this.findTransport(roomId, direction, clientId);
-    if (!transport) throw new Error('Transport not found');
+    if (!transport) throw new Error(`'Transport not found', ${transport}`);
     await transport.connectToRouter(dtlsParameters);
   }
 
@@ -58,8 +62,8 @@ export default class MediasoupManager extends IMediasoupManager {
   }
 
   async createProducer(
-    transportId: string,
     roomId: string,
+    transportId: string,
     clientId: string,
     userId: string,
     rtpParameters: RtpParameters,
