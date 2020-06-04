@@ -6,9 +6,9 @@ import {Filter, matchAppData} from 'mediasoup/Utils';
 import {BaseEntity} from 'mediasoup/BaseEntity';
 
 export default class WebRtcTransport extends BaseEntity {
-  private readonly producers: Array<Producer> = [];
+  public readonly producers: Array<Producer> = [];
 
-  private readonly consumers: Array<Consumer> = [];
+  public readonly consumers: Array<Consumer> = [];
 
   constructor(
     private readonly mediasoup: IMediasoupInternal,
@@ -39,6 +39,10 @@ export default class WebRtcTransport extends BaseEntity {
 
   public get appData() {
     return this.instance.appData;
+  }
+
+  public get getProducers() {
+    return this.producers;
   }
 
   public async connectToRouter(dtlsParameters: types.DtlsParameters): Promise<void> {

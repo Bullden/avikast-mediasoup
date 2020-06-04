@@ -1,5 +1,3 @@
-import {Direction} from 'entities/Mediasoup';
-
 export type ConnectTransportPattern = {
   area: 'transport';
   action: 'connect';
@@ -8,7 +6,7 @@ export type ConnectTransportPattern = {
 export interface ConnectTransportRequest {
   roomId: string;
   dtlsParameters: object;
-  direction: Direction;
+  direction: string;
   clientId: string;
 }
 

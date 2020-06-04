@@ -2,6 +2,8 @@ import {Injectable} from '@nestjs/common';
 import IMediasoupManager from './IMediasoupManager';
 import IMediasoup from 'mediasoup/IMediasoup';
 import {DtlsParameters, RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
+import Producer from 'mediasoup/Producer';
+import {ProducerOptions} from 'entities/Mediasoup';
 
 @Injectable()
 export default class MediasoupManager extends IMediasoupManager {
@@ -103,6 +105,15 @@ export default class MediasoupManager extends IMediasoupManager {
     const producer = transport.findProducer({userId, roomId});
     if (!producer) throw new Error(`cannot find producer by userId ${userId}`);
     return producer;
+  }
+
+  async getProducers(roomId: string) {
+    const router = await this.findRouter(roomId);
+    const transports = router.getTransports();
+    const producers: ProducerOptions[] = [];
+    transports.forEach((transport) => producers.push(...transport.producers));
+    if (!producers) throw new Error(`cno producer onthis router.roomId ${router.roomId}`);
+    return producers;
   }
 
   async findConsumer(roomId: string, clientId: string, userId: string) {

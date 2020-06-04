@@ -6,6 +6,7 @@ import {
   TransportOptions,
 } from 'entities/Mediasoup';
 import {DtlsParameters} from 'mediasoup/lib/types';
+import Producer from 'mediasoup/Producer';
 
 export default abstract class IMediasoupManager {
   abstract createRouter(roomId: string): Promise<RouterOptions>;
@@ -40,6 +41,8 @@ export default abstract class IMediasoupManager {
   ): Promise<ConsumerOptions>;
 
   abstract findRouter(roomId: string): Promise<RouterOptions>;
+
+  abstract getProducers(roomId: string): Promise<ProducerOptions[]>;
 
   abstract findProducer(
     roomId: string,

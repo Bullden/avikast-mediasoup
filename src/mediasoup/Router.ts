@@ -3,6 +3,7 @@ import IMediasoupInternal from './IMediasoupInternal';
 import Transport from './WebRtcTransport';
 import {BaseEntity} from 'mediasoup/BaseEntity';
 import {Filter} from 'mediasoup/Utils';
+import Producer from 'mediasoup/Producer';
 
 export default class Router extends BaseEntity {
   private readonly transports: Array<Transport> = [];
@@ -37,6 +38,10 @@ export default class Router extends BaseEntity {
 
   public get roomId() {
     return this.instance.appData.roomId;
+  }
+
+  public getTransports() {
+    return this.transports;
   }
 
   public findTransport(filter: Filter) {
