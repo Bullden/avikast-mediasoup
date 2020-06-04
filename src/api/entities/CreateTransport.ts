@@ -1,4 +1,4 @@
-import {Direction, MediaAttributes} from 'entities/Mediasoup';
+import {Direction} from 'entities/Mediasoup';
 
 export type CreateTransportPattern = {
   area: 'transport';
