@@ -8,6 +8,8 @@ import {BaseEntity} from 'mediasoup/BaseEntity';
 export default class WebRtcTransport extends BaseEntity {
   private readonly producers: Array<Producer> = [];
 
+  private readonly consumers: Array<Consumer> = [];
+
   constructor(
     private readonly mediasoup: IMediasoupInternal,
     private readonly instance: types.WebRtcTransport,
@@ -78,6 +80,13 @@ export default class WebRtcTransport extends BaseEntity {
   public findProducer(filter: Filter) {
     for (const producer of this.producers) {
       if (matchAppData(producer.appData, filter)) return producer;
+    }
+    return undefined;
+  }
+
+  public findConsumer(filter: Filter) {
+    for (const consumer of this.consumers) {
+      if (matchAppData(consumer.appData, filter)) return consumer;
     }
     return undefined;
   }

@@ -8,6 +8,7 @@ export interface CreateConsumerRequest {
   roomId: string;
   rtpCapabilities: object;
   clientId: string;
+  userId: string;
 }
 
 export interface CreateConsumerResponse {

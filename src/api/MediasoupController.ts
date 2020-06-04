@@ -17,6 +17,7 @@ import {
   GetRouterRequest,
   GetRouterResponse,
 } from 'api/entities';
+import {DtlsParameters} from 'mediasoup/lib/WebRtcTransport';
 
 @Controller()
 export default class MediasoupController {
@@ -53,7 +54,7 @@ export default class MediasoupController {
   ): Promise<ConnectTransportResponse> {
     await this.roomManager.connectTransport(
       request.roomId,
-      request.dtlsParameters,
+      request.dtlsParameters as DtlsParameters,
       request.direction,
       request.clientId,
     );
@@ -65,8 +66,8 @@ export default class MediasoupController {
       request.transportId,
       request.roomId,
       request.userId,
-      request.rtpParameters,
       request.clientId,
+      request.rtpParameters,
     );
     return {
       producerId: producer.id,
@@ -82,6 +83,7 @@ export default class MediasoupController {
       request.roomId,
       request.rtpCapabilities,
       request.clientId,
+      request.userId,
     );
     return {
       id: consumer.id,
@@ -93,6 +95,7 @@ export default class MediasoupController {
   @MessagePattern({area: 'producer', action: 'get'})
   async getProducer(request: GetProducerRequest): Promise<GetProducerResponse> {
     const producer = await this.roomManager.findProducer(request.roomId, request.userId);
+    if (!producer) throw new Error(`API producer has not been found`);
     return {
       id: producer.id,
       kind: producer.kind,
