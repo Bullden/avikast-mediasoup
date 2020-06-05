@@ -38,13 +38,6 @@ export default class MediasoupController {
   async createTransport(
     request: CreateTransportRequest,
   ): Promise<CreateTransportResponse> {
-    console.log(
-      request.roomId,
-      request.userId,
-      request.direction,
-      request.clientId,
-      'RESPONSE',
-    );
     const transport = await this.roomManager.createTransport(
       request.roomId,
       request.userId,
@@ -64,7 +57,6 @@ export default class MediasoupController {
   async connectTransport(
     request: ConnectTransportRequest,
   ): Promise<ConnectTransportResponse> {
-    console.log('connectTransport', request.roomId);
     await this.roomManager.connectTransport(
       request.roomId,
       request.dtlsParameters as DtlsParameters,
@@ -124,7 +116,7 @@ export default class MediasoupController {
     };
   }
 
-  @MessagePattern({area: 'producers', action: 'get'})
+  @MessagePattern({area: 'producers', action: 'receive'})
   async getProducers(request: GetProducersRequest): Promise<GetProducersResponse> {
     console.log('GET PRODUCERS');
     const producers = await this.roomManager.getProducers(request.roomId);

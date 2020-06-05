@@ -22,9 +22,7 @@ export default class MediasoupManager extends IMediasoupManager {
     clientId: string,
   ) {
     const router = await this.mediasoup.findRouter({roomId});
-    console.log('createTransport', router, roomId);
     const transport = this.findTransport(roomId, direction, clientId);
-    console.log(roomId, direction, clientId, 'transport');
     // if (transport) throw new Error(`Transport by client id ${clientId} already created`);
     if (!router) throw new Error('Router not found');
     return router.createWebRtcTransport({
@@ -40,7 +38,6 @@ export default class MediasoupManager extends IMediasoupManager {
     direction: 'send' | 'receive',
     clientId: string,
   ) {
-    console.log(roomId, 'ROOM ID FOR SEARCH');
     // const transport = this.findTransport(roomId, direction, clientId);
     const router = await this.findRouter(roomId);
     const transport = router.findTransport({roomId, direction});
@@ -49,7 +46,6 @@ export default class MediasoupManager extends IMediasoupManager {
   }
 
   findTransportByRoomId(roomId: string, direction: 'send' | 'receive') {
-    console.log('findTransport By RoomId ROOOM ID ', roomId);
     const router = this.mediasoup.findRouter({roomId});
     if (!router) {
       throw new Error(`findTransportByRoomId cannot find router by roomId ${roomId}`);
@@ -58,7 +54,6 @@ export default class MediasoupManager extends IMediasoupManager {
   }
 
   findTransport(roomId: string, direction: 'send' | 'receive', clientId: string) {
-    console.log('find transport ROOOM ID ', roomId);
     const router = this.mediasoup.findRouter({roomId});
     if (!router) throw new Error(`findTransport cannot find router by roomId ${roomId}`);
     return router.findTransport({
@@ -124,16 +119,18 @@ export default class MediasoupManager extends IMediasoupManager {
     const transports = router.getTransports();
     const producers: ProducerOptions[] = [];
     transports.forEach((transport) => producers.push(...transport.producers));
-    console.log(producers, 'PRODUCERS LIST');
     if (!producers) throw new Error(`cno producer onthis router.roomId ${router.roomId}`);
+    console.log('get producers', producers);
     return producers;
   }
 
   async findConsumer(roomId: string, clientId: string, userId: string) {
     const transport = this.findTransportByRoomId(roomId, 'receive');
-    if (!transport) throw new Error(`cannot find transport by transport ${transport}`);
+    if (!transport)
+      throw new Error(`COnsumer:cannot find transport by transport ${transport}`);
     const consumer = transport.findConsumer({userId, clientId, roomId});
-    if (!consumer) throw new Error(`cannot find consumer by clientId ${clientId}`);
+    if (!consumer)
+      throw new Error(`COnsumer: cannot find consumer by clientId ${clientId}`);
     return consumer;
   }
 }
