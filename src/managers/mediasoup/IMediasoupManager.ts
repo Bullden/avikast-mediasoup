@@ -27,7 +27,6 @@ export default abstract class IMediasoupManager {
 
   abstract createProducer(
     roomId: string,
-
     transportId: string,
     clientId: string,
     userId: string,

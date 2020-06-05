@@ -3,7 +3,6 @@ import IMediasoupInternal from './IMediasoupInternal';
 import Transport from './WebRtcTransport';
 import {BaseEntity} from 'mediasoup/BaseEntity';
 import {Filter} from 'mediasoup/Utils';
-import Producer from 'mediasoup/Producer';
 
 export default class Router extends BaseEntity {
   private readonly transports: Array<Transport> = [];
@@ -32,7 +31,9 @@ export default class Router extends BaseEntity {
         appData,
       }),
     );
-    console.log('TRANSPORT CREATED', appData.clientId, appData.direction);
+    console.log(
+      `Create transport by clientid ${appData.clientId} direction ${appData.direction} and roomid ${appData.roomId}`,
+    );
     this.transports.push(transport);
     return transport;
   }
@@ -46,7 +47,13 @@ export default class Router extends BaseEntity {
   }
 
   public findTransport(filter: Filter) {
-    return this.transports.find((transport) => transport.matchAppData(filter));
+    for (const transport of this.transports) {
+      if (transport.matchAppData(filter)) {
+        return transport;
+      }
+    }
+
+    return undefined;
   }
 
   get appData() {

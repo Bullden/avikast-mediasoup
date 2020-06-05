@@ -94,4 +94,8 @@ export default class WebRtcTransport extends BaseEntity {
     }
     return undefined;
   }
+
+  public get dtlsState() {
+    return this.instance.dtlsState;
+  }
 }
