@@ -32,6 +32,7 @@ export default class Router extends BaseEntity {
         appData,
       }),
     );
+    console.log('TRANSPORT CREATED', appData.clientId, appData.direction);
     this.transports.push(transport);
     return transport;
   }
