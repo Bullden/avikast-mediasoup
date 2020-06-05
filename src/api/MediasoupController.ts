@@ -20,7 +20,7 @@ import {
   GetRouterResponse,
 } from 'api/entities';
 import {DtlsParameters} from 'mediasoup/lib/WebRtcTransport';
-import {Direction} from 'entities/Mediasoup';
+import {Direction, ProducerOptions} from 'entities/Mediasoup';
 
 @Controller()
 export default class MediasoupController {
@@ -116,13 +116,18 @@ export default class MediasoupController {
     };
   }
 
-  @MessagePattern({area: 'producers', action: 'receive'})
+  @MessagePattern({area: 'producers', action: 'get'})
   async getProducers(request: GetProducersRequest): Promise<GetProducersResponse> {
-    console.log('GET PRODUCERS');
     const producers = await this.roomManager.getProducers(request.roomId);
     if (!producers) throw new Error(`API producer has not been found`);
     return {
-      producers,
+      producers: producers.map(
+        (producer): ProducerOptions => ({
+          id: producer.id,
+          kind: producer.kind,
+          rtpParameters: producer.rtpParameters,
+        }),
+      ),
     };
   }
 }
