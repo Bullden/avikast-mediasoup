@@ -110,7 +110,7 @@ export default class MediasoupManager extends IMediasoupManager {
     return router;
   }
 
-  async findProducer(roomId: string,clientId: string,  userId: string) {
+  async findProducer(roomId: string,  userId: string) {
     const transport = this.findTransportByRoomId(roomId, 'send');
     if (!transport) throw new Error(`cannot find transport by transport ${transport}`);
     const producer = transport.findProducer({roomId});
