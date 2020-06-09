@@ -35,5 +35,10 @@
     "tsconfig-paths": "^3.9.0",
     "typescript": "^3.7.4",
     "husky": "^4.2.5"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn compile && yarn lint"
+    }
   }
 }
