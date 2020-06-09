@@ -118,7 +118,6 @@ export default class MediasoupController {
 
   @MessagePattern({area: 'producers', action: 'get'})
   async getProducers(request: GetProducersRequest): Promise<GetProducersResponse> {
-    console.log(request.roomId, 'GET PRODUCERS REQUEST');
     const producers = await this.roomManager.getProducers(request.roomId);
     if (!producers) throw new Error(`API producer has not been found`);
     return {

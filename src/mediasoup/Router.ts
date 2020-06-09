@@ -31,9 +31,6 @@ export default class Router extends BaseEntity {
         appData,
       }),
     );
-    console.log(
-      `Create transport by clientid ${appData.clientId} direction ${appData.direction} and roomid ${appData.roomId}`,
-    );
     this.transports.push(transport);
     return transport;
   }
