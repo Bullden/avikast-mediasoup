@@ -2,8 +2,9 @@
 import {Injectable} from '@nestjs/common';
 import IMediasoupManager from './IMediasoupManager';
 import IMediasoup from 'mediasoup/IMediasoup';
-import {DtlsParameters, RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
+import {RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
 import {ProducerOptions} from 'entities/Mediasoup';
+import {types} from 'mediasoup';
 
 @Injectable()
 export default class MediasoupManager extends IMediasoupManager {
@@ -22,8 +23,6 @@ export default class MediasoupManager extends IMediasoupManager {
     clientId: string,
   ) {
     const router = await this.mediasoup.findRouter({roomId});
-    // const transport = this.findTransport(roomId, direction, clientId);
-    // if (transport) throw new Error(`Transport by client id ${clientId} already created`);
     if (!router) throw new Error('Router not found');
     return router.createWebRtcTransport({
       roomId,
@@ -35,16 +34,15 @@ export default class MediasoupManager extends IMediasoupManager {
 
   async connectTransport(
     roomId: string,
-    dtlsParameters: DtlsParameters,
+    dtlsParameters: object,
     direction: 'send' | 'receive',
     clientId: string,
   ) {
-    // const transport = this.findTransport(roomId, direction, clientId);
     const router = await this.findRouter(roomId);
     const transport = router.findTransport({roomId, direction, clientId});
     if (!transport) throw new Error(`'Transport not found', ${transport}`);
     console.log('TRANSPORT CONNECTED ID', transport.id);
-    await transport.connectToRouter(dtlsParameters);
+    await transport.connectToRouter(dtlsParameters as types.DtlsParameters);
   }
 
   findTransportByRoomId(roomId: string, direction: 'send' | 'receive') {
@@ -59,6 +57,7 @@ export default class MediasoupManager extends IMediasoupManager {
     const router = this.mediasoup.findRouter({roomId});
     if (!router) throw new Error(`findTransport cannot find router by roomId ${roomId}`);
     console.log('find transport');
+    const trans = router.findTransport({})
     const transport = router.findTransport({
       roomId,
       direction,
@@ -80,8 +79,6 @@ export default class MediasoupManager extends IMediasoupManager {
       throw new Error(
         `No transport By roomId ${roomId} direction send and clientid ${clientId}`,
       );
-    // const producer = this.findProducer(roomId, userId);
-    // if (producer) return producer;
     return transport.createProducer(transportId, rtpParameters, {
       roomId,
       clientId,
@@ -99,8 +96,7 @@ export default class MediasoupManager extends IMediasoupManager {
     const transport = this.findTransport(roomId, 'receive', clientId);
     if (!transport)
       throw new Error(`By roomId ${roomId} direction receive and clientid ${clientId}`);
-    // const consumer = this.findConsumer(roomId, userId, userId);
-    // if (consumer) return consumer;
+
     return transport.createConsumer(producerId, rtpCapabilities, {
       roomId,
       clientId,
@@ -114,7 +110,7 @@ export default class MediasoupManager extends IMediasoupManager {
     return router;
   }
 
-  async findProducer(roomId: string, userId: string) {
+  async findProducer(roomId: string,clientId: string,  userId: string) {
     const transport = this.findTransportByRoomId(roomId, 'send');
     if (!transport) throw new Error(`cannot find transport by transport ${transport}`);
     const producer = transport.findProducer({roomId});
@@ -131,14 +127,14 @@ export default class MediasoupManager extends IMediasoupManager {
       .forEach((transport) => {
         producers.push(...transport.producers);
       });
-    if (!producers) throw new Error(`cno producer onthis router.roomId ${router.roomId}`);
+    if (!producers) throw new Error(`cno producer on this router.roomId ${router.roomId}`);
     return producers;
   }
 
   async findConsumer(roomId: string, clientId: string, userId: string) {
     const transport = this.findTransportByRoomId(roomId, 'receive');
     if (!transport)
-      throw new Error(`COnsumer:cannot find transport by transport ${transport}`);
+      throw new Error(`Consumer:cannot find transport by transport ${transport}`);
     const consumer = transport.findConsumer({userId, clientId, roomId});
     if (!consumer)
       throw new Error(`COnsumer: cannot find consumer by clientId ${clientId}`);

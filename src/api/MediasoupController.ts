@@ -19,7 +19,6 @@ import {
   GetRouterRequest,
   GetRouterResponse,
 } from 'api/entities';
-import {DtlsParameters} from 'mediasoup/lib/WebRtcTransport';
 import {Direction, ProducerOptions} from 'entities/Mediasoup';
 
 @Controller()
@@ -59,7 +58,7 @@ export default class MediasoupController {
   ): Promise<ConnectTransportResponse> {
     await this.roomManager.connectTransport(
       request.roomId,
-      request.dtlsParameters as DtlsParameters,
+      request.dtlsParameters,
       request.direction as Direction,
       request.clientId,
     );
