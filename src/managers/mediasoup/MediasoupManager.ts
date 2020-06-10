@@ -13,7 +13,9 @@ export default class MediasoupManager extends IMediasoupManager {
   }
 
   async createRouter(roomId: string) {
-    return this.mediasoup.createRouter({roomId});
+    const router =  await this.mediasoup.createRouter({roomId});
+    console.log(router)
+    return router
   }
 
   async createTransport(
@@ -57,7 +59,6 @@ export default class MediasoupManager extends IMediasoupManager {
     const router = this.mediasoup.findRouter({roomId});
     if (!router) throw new Error(`findTransport cannot find router by roomId ${roomId}`);
     console.log('find transport');
-    const trans = router.findTransport({})
     const transport = router.findTransport({
       roomId,
       direction,
@@ -119,7 +120,8 @@ export default class MediasoupManager extends IMediasoupManager {
   }
 
   async getProducers(roomId: string) {
-    const router = await this.findRouter(roomId);
+    const router = await this.mediasoup.findRouter({roomId});
+    if (!router) throw new Error(`cannot find router by roomId ${router}`);
     const transports = router.getTransports();
     const producers: ProducerOptions[] = [];
     transports
