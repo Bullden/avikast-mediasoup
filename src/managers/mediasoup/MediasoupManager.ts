@@ -24,8 +24,10 @@ export default class MediasoupManager extends IMediasoupManager {
     direction: 'send' | 'receive',
     clientId: string,
   ) {
-    const router = await this.mediasoup.findRouter({roomId});
-    if (!router) throw new Error('Router not found');
+    let router = await this.mediasoup.findRouter({roomId});
+    if (!router){
+      router = await this.mediasoup.createRouter({roomId})
+    }
     return router.createWebRtcTransport({
       roomId,
       userId,
@@ -106,8 +108,8 @@ export default class MediasoupManager extends IMediasoupManager {
   }
 
   async findRouter(roomId: string) {
-    const router = this.mediasoup.findRouter({roomId});
-    if (!router) throw new Error(`cannot find router by roomId ${router}`);
+    let router = this.mediasoup.findRouter({roomId});
+    if(!router) router = await this.mediasoup.createRouter({roomId})
     return router;
   }
 
