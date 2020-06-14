@@ -72,11 +72,14 @@ export default class MediasoupController {
       request.clientId,
       request.userId,
       request.rtpParameters,
+      request.mediaType,
+      request.mediaKind,
     );
     return {
       producerId: producer.id,
       kind: producer.kind,
       rtpParameters: producer.rtpParameters,
+      appData: producer.appData,
     };
   }
 
@@ -125,6 +128,7 @@ export default class MediasoupController {
           id: producer.id,
           kind: producer.kind,
           rtpParameters: producer.rtpParameters,
+          appData: producer.appData,
         }),
       ),
     };

@@ -4,6 +4,7 @@ import Producer from './Producer';
 import Consumer from './Consumer';
 import {Filter, matchAppData} from 'mediasoup/Utils';
 import {BaseEntity} from 'mediasoup/BaseEntity';
+import {MediaKind} from 'entities/Mediasoup';
 
 export default class WebRtcTransport extends BaseEntity {
   public readonly producers: Array<Producer> = [];
@@ -52,17 +53,20 @@ export default class WebRtcTransport extends BaseEntity {
   public async createProducer(
     transportId: string,
     rtpParameters: types.RtpParameters,
+    mediaKind: MediaKind,
     appData: object,
   ): Promise<Producer> {
     const producer = new Producer(
       this.mediasoup,
       await this.instance.produce({
-        kind: 'video',
+        kind: mediaKind,
         rtpParameters,
         appData,
       }),
     );
     this.producers.push(producer);
+    // eslint-disable-next-line no-console
+    console.log(`create producer with room id ${producer.roomId}`, this.producers.length);
     return producer;
   }
 
@@ -82,6 +86,8 @@ export default class WebRtcTransport extends BaseEntity {
   }
 
   public findProducer(filter: Filter) {
+    // eslint-disable-next-line no-console
+    console.log(this.producers, 'FIND PRODUCERS ARRAY');
     for (const producer of this.producers) {
       if (matchAppData(producer.appData, filter)) return producer;
     }

@@ -1,5 +1,7 @@
 import {
   ConsumerOptions,
+  MediaKind,
+  MediaType,
   ProducerOptions,
   RouterOptions,
   TransportOptions,
@@ -28,6 +30,8 @@ export default abstract class IMediasoupManager {
     clientId: string,
     userId: string,
     rtpParameters: object,
+    mediaType: MediaType,
+    mediaKind: MediaKind,
   ): Promise<ProducerOptions>;
 
   abstract createConsumer(

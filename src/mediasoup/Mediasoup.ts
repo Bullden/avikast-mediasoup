@@ -14,6 +14,8 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
 
   public async createRouter(appData: Filter) {
     const worker = this.findBestWorker();
+    const testRouter = this.findRouter(appData);
+    if (testRouter) throw new Error('Router alreedy created');
     const router = await worker.createRouter(appData);
     return router;
   }

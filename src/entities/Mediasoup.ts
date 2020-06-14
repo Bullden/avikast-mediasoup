@@ -1,11 +1,10 @@
-export type Kind = 'video' | 'audio';
-
-export type MediaType = 'camera' | 'screenshare';
-
 export type Direction = 'send' | 'receive';
 
+export type MediaKind = 'audio' | 'video';
+export type MediaType = 'camera' | 'screen';
+
 export interface MediaAttributes {
-  kind: Kind;
+  kind: MediaKind;
   mediaType: MediaType;
   direction: Direction;
 }
@@ -22,8 +21,9 @@ export interface RouterOptions {
 
 export interface ProducerOptions {
   id: string;
-  kind: Kind;
+  kind: MediaKind;
   rtpParameters: object;
+  appData: object;
 }
 
 export interface TransportOptions {

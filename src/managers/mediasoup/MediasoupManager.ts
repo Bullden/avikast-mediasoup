@@ -3,7 +3,7 @@ import {Injectable} from '@nestjs/common';
 import IMediasoupManager from './IMediasoupManager';
 import IMediasoup from 'mediasoup/IMediasoup';
 import {RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
-import {ProducerOptions} from 'entities/Mediasoup';
+import {MediaKind, MediaType, ProducerOptions} from 'entities/Mediasoup';
 import {types} from 'mediasoup';
 
 @Injectable()
@@ -76,17 +76,24 @@ export default class MediasoupManager extends IMediasoupManager {
     clientId: string,
     userId: string,
     rtpParameters: RtpParameters,
+    mediaType: MediaType,
+    mediaKind: MediaKind
   ) {
     const transport = this.findTransport(roomId, 'send', clientId); // todo: refactor
     if (!transport)
       throw new Error(
         `No transport By roomId ${roomId} direction send and clientid ${clientId}`,
       );
-    return transport.createProducer(transportId, rtpParameters, {
+    const producer = await transport.createProducer(transportId, rtpParameters,mediaKind, {
       roomId,
       clientId,
       userId,
+      mediaType
     });
+    const producerOptions = producer
+    console.log('producer created', producerOptions.id)
+
+    return producerOptions
   }
 
   async createConsumer(
@@ -118,6 +125,7 @@ export default class MediasoupManager extends IMediasoupManager {
     if (!transport) throw new Error(`cannot find transport by transport ${transport}`);
     const producer = transport.findProducer({roomId});
     if (!producer) throw new Error(`cannot find producer by userId ${userId}`);
+    console.log('find producers')
     return producer;
   }
 
@@ -126,12 +134,14 @@ export default class MediasoupManager extends IMediasoupManager {
     if (!router) throw new Error(`cannot find router by roomId ${router}`);
     const transports = router.getTransports();
     const producers: ProducerOptions[] = [];
+    console.log(`get producers with room id ${roomId}`);
     transports
       .filter((t) => t.dtlsState === 'connected')
       .forEach((transport) => {
         producers.push(...transport.producers);
       });
-    if (!producers) throw new Error(`cno producer on this router.roomId ${router.roomId}`);
+    console.log('result producers array', producers.length)
+    if (!producers) throw new Error(`no producer on this router.roomId ${router.roomId}`);
     return producers;
   }
 

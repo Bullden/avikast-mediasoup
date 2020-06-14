@@ -1,4 +1,4 @@
-import {Kind} from 'entities/Mediasoup';
+import {MediaKind} from 'entities/Mediasoup';
 
 export type GetProducerPattern = {
   area: 'producer';
@@ -12,6 +12,6 @@ export interface GetProducerRequest {
 
 export interface GetProducerResponse {
   id: string;
-  kind: Kind;
+  kind: MediaKind;
   rtpParameters: object;
 }
