@@ -1,7 +1,8 @@
-export type Direction = 'send' | 'receive';
-
 export type MediaKind = 'audio' | 'video';
+
 export type MediaType = 'camera' | 'screen';
+
+export type Direction = 'send' | 'receive';
 
 export interface MediaAttributes {
   kind: MediaKind;
@@ -23,7 +24,6 @@ export interface ProducerOptions {
   id: string;
   kind: MediaKind;
   rtpParameters: object;
-  appData: object;
 }
 
 export interface TransportOptions {

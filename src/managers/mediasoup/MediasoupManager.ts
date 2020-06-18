@@ -4,17 +4,18 @@ import IMediasoup from 'mediasoup/IMediasoup';
 import {RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
 import {MediaKind, MediaType, ProducerOptions} from 'entities/Mediasoup';
 import {types} from 'mediasoup';
+import ILogger from 'utils/ILogger';
 
 @Injectable()
 export default class MediasoupManager extends IMediasoupManager {
-  constructor(private readonly mediasoup: IMediasoup) {
+  constructor(private readonly mediasoup: IMediasoup, private readonly logger: ILogger) {
     super();
   }
 
   async createRouter(roomId: string) {
-    const router =  await this.mediasoup.createRouter({roomId});
-    console.log(router)
-    return router
+    const router = await this.mediasoup.createRouter({roomId});
+    this.logger.routerLog('router created with roomId:', router.roomId);
+    return router;
   }
 
   async createTransport(
@@ -24,8 +25,8 @@ export default class MediasoupManager extends IMediasoupManager {
     clientId: string,
   ) {
     let router = await this.mediasoup.findRouter({roomId});
-    if (!router){
-      router = await this.mediasoup.createRouter({roomId})
+    if (!router) {
+      router = await this.mediasoup.createRouter({roomId});
     }
     return router.createWebRtcTransport({
       roomId,
@@ -44,28 +45,29 @@ export default class MediasoupManager extends IMediasoupManager {
     const router = await this.findRouter(roomId);
     const transport = router.findTransport({roomId, direction, clientId});
     if (!transport) throw new Error(`'Transport not found', ${transport}`);
-    console.log('TRANSPORT CONNECTED ID', transport.id);
+    this.logger.transportLog('transport connected', transport.id);
     await transport.connectToRouter(dtlsParameters as types.DtlsParameters);
   }
 
   findTransportByRoomId(roomId: string, direction: 'send' | 'receive') {
     const router = this.mediasoup.findRouter({roomId});
+    this.logger.transportLog('find transport by room id', roomId);
     if (!router) {
       throw new Error(`findTransportByRoomId cannot find router by roomId ${roomId}`);
     }
+    this.logger.transportLog('transport founded', direction);
     return router.findTransport({roomId, direction});
   }
 
   findTransport(roomId: string, direction: 'send' | 'receive', clientId: string) {
     const router = this.mediasoup.findRouter({roomId});
     if (!router) throw new Error(`findTransport cannot find router by roomId ${roomId}`);
-    console.log('find transport');
     const transport = router.findTransport({
       roomId,
       direction,
       clientId,
     });
-    console.log('transport found');
+    this.logger.transportLog('find transport by room id and client id:', roomId);
     return transport;
   }
 
@@ -76,23 +78,26 @@ export default class MediasoupManager extends IMediasoupManager {
     userId: string,
     rtpParameters: RtpParameters,
     mediaType: MediaType,
-    mediaKind: MediaKind
+    mediaKind: MediaKind,
   ) {
     const transport = this.findTransport(roomId, 'send', clientId); // todo: refactor
     if (!transport)
       throw new Error(
         `No transport By roomId ${roomId} direction send and clientid ${clientId}`,
       );
-    const producer = await transport.createProducer(transportId, rtpParameters,mediaKind, {
-      roomId,
-      clientId,
-      userId,
-      mediaType
-    });
-    const producerOptions = producer
-    console.log('producer created', producerOptions.id)
-
-    return producerOptions
+    const producer = await transport.createProducer(
+      transportId,
+      rtpParameters,
+      mediaKind,
+      {
+        roomId,
+        clientId,
+        userId,
+        mediaType,
+      },
+    );
+    this.logger.producerLog('producer created', producer.id);
+    return producer;
   }
 
   async createConsumer(
@@ -106,25 +111,27 @@ export default class MediasoupManager extends IMediasoupManager {
     if (!transport)
       throw new Error(`By roomId ${roomId} direction receive and clientid ${clientId}`);
 
-    return transport.createConsumer(producerId, rtpCapabilities, {
+    const consumer = await transport.createConsumer(producerId, rtpCapabilities, {
       roomId,
       clientId,
       userId,
     });
+    this.logger.consumerLog('consumer created', consumer.id);
+    return consumer;
   }
 
   async findRouter(roomId: string) {
     let router = this.mediasoup.findRouter({roomId});
-    if(!router) router = await this.mediasoup.createRouter({roomId})
+    if (!router) router = await this.mediasoup.createRouter({roomId});
     return router;
   }
 
-  async findProducer(roomId: string,  userId: string) {
+  async findProducer(roomId: string, userId: string) {
     const transport = this.findTransportByRoomId(roomId, 'send');
     if (!transport) throw new Error(`cannot find transport by transport ${transport}`);
     const producer = transport.findProducer({roomId});
     if (!producer) throw new Error(`cannot find producer by userId ${userId}`);
-    console.log('find producers')
+    this.logger.producerLog('producer found', producer.id);
     return producer;
   }
 
@@ -133,13 +140,13 @@ export default class MediasoupManager extends IMediasoupManager {
     if (!router) throw new Error(`cannot find router by roomId ${router}`);
     const transports = router.getTransports();
     const producers: ProducerOptions[] = [];
-    console.log(`get producers with room id ${roomId}`);
+    this.logger.producerLog('get producers by roomid:', roomId);
     transports
       .filter((t) => t.dtlsState === 'connected')
       .forEach((transport) => {
         producers.push(...transport.producers);
       });
-    console.log('result producers array', producers.length)
+    this.logger.producerLog('result producers array length:', roomId);
     if (!producers) throw new Error(`no producer on this router.roomId ${router.roomId}`);
     return producers;
   }

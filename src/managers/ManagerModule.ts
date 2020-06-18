@@ -2,6 +2,8 @@ import {Module} from '@nestjs/common';
 import {MediasoupModule} from 'mediasoup/MediasoupModule';
 import IMediasoupManager from './mediasoup/IMediasoupManager';
 import MediasoupManager from './mediasoup/MediasoupManager';
+import ILogger from 'utils/ILogger';
+import Logger from 'utils/Logger';
 
 @Module({
   imports: [
@@ -12,6 +14,10 @@ import MediasoupManager from './mediasoup/MediasoupManager';
     {
       provide: IMediasoupManager,
       useClass: MediasoupManager,
+    },
+    {
+      provide: ILogger,
+      useClass: Logger,
     },
   ],
   exports: [
