@@ -1,4 +1,3 @@
-/* eslint-disable */
 import {Injectable} from '@nestjs/common';
 import IMediasoupManager from './IMediasoupManager';
 import IMediasoup from 'mediasoup/IMediasoup';

@@ -65,7 +65,6 @@ export default class WebRtcTransport extends BaseEntity {
       }),
     );
     this.producers.push(producer);
-    // eslint-disable-next-line no-console
     console.log(`create producer with room id ${producer.roomId}`, this.producers.length);
     return producer;
   }
@@ -86,7 +85,6 @@ export default class WebRtcTransport extends BaseEntity {
   }
 
   public findProducer(filter: Filter) {
-    // eslint-disable-next-line no-console
     console.log(this.producers, 'FIND PRODUCERS ARRAY');
     for (const producer of this.producers) {
       if (matchAppData(producer.appData, filter)) return producer;
