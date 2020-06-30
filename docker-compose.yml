@@ -1,13 +1,12 @@
 version: '3.7'
 services:
-  backend:
+  mediasoup:
     image: avikast-mediasoup
     build: .
     networks:
       - backend
     ports:
-      - 3080:3080
-      - 3443:3443
+      - 1550:1550
     environment:
       NODE_ENV: testing
 volumes:
