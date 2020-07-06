@@ -10,7 +10,12 @@ import WorkerConfig from 'mediasoup/WorkerConfig';
 export const initializeMediasoup = async (
   configService: IConfigService,
 ): Promise<IMediasoup> => {
-  const listenIps: Array<TransportListenIp> = [{ip: configService.get('LISTEN_IP')}];
+  const listenIps: Array<TransportListenIp> = [
+    {
+      ip: configService.get('LISTEN_IP'),
+      announcedIp: configService.getOptional('ANNOUNCED_IP'),
+    },
+  ];
 
   const config: MediasoupConfig = {
     mediaCodecs,
