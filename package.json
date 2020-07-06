@@ -22,7 +22,7 @@
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^6.5.4",
-    "@spryrocks/config-node": "^1.0.0-alpha.5",
+    "@spryrocks/config-node": "^1.0.2",
     "mediasoup": "^3.5.15"
   },
   "devDependencies": {
