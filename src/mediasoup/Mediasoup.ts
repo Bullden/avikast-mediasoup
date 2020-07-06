@@ -4,6 +4,7 @@ import Worker from './Worker';
 import MediasoupConfig from 'mediasoup/MediasoupConfig';
 import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
 import {Filter} from 'mediasoup/Utils';
+import WorkerConfig from 'mediasoup/WorkerConfig';
 
 export default class Mediasoup extends IMediasoup implements IMediasoupInternal {
   private readonly workers: Array<Worker> = [];
@@ -26,8 +27,14 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
     return worker;
   }
 
-  public async createWorker() {
-    const worker = new Worker(this, await createWorker());
+  public async createWorker(config: WorkerConfig) {
+    const worker = new Worker(
+      this,
+      await createWorker({
+        rtcMinPort: config.rtcMinPort,
+        rtcMaxPort: config.rtcMaxPort,
+      }),
+    );
     this.workers.push(worker);
     return worker;
   }

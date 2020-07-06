@@ -5,6 +5,7 @@ import {mediaCodecs} from 'config/MediaCodecs';
 import {initialAvailableOutgoingBitrate} from 'config/InitialAvailableOutgoingBitrate';
 import {TransportListenIp} from 'mediasoup/lib/types';
 import {IConfigService} from '@spryrocks/config-node';
+import WorkerConfig from 'mediasoup/WorkerConfig';
 
 export const initializeMediasoup = async (
   configService: IConfigService,
@@ -17,6 +18,12 @@ export const initializeMediasoup = async (
     listenIps,
   };
   const mediasoup = new Mediasoup(config);
-  await mediasoup.createWorker();
+
+  const workerConfig: WorkerConfig = {
+    rtcMinPort: configService.getNumber('RTC_MIN_PORT'),
+    rtcMaxPort: configService.getNumber('RTC_MAX_PORT'),
+  };
+
+  await mediasoup.createWorker(workerConfig);
   return mediasoup;
 };
