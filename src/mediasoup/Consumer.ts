@@ -27,4 +27,10 @@ export default class Consumer extends BaseEntity {
   get appData() {
     return this.instance.appData;
   }
+
+  public onConnectCallback() {
+    return this.instance.on('connect', () => {
+      console.log('plain transport connected');
+    });
+  }
 }

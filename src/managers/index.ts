@@ -1,6 +1,6 @@
-import IMediasoupManager from './mediasoup/IMediasoupManager';
+import IMediaManager from 'managers/media/IMediaManager';
 
 export {
   //
-  IMediasoupManager,
+  IMediaManager,
 };

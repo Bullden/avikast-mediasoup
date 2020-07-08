@@ -19,26 +19,25 @@
     "@nestjs/common": "^7.0.0",
     "@nestjs/core": "^7.0.0",
     "@nestjs/microservices": "^7.1.0",
+    "@spryrocks/config-node": "^1.0.2",
+    "@types/fluent-ffmpeg": "2.1.14",
+    "ffmpeg": "0.0.4",
+    "fluent-ffmpeg": "2.1.2",
+    "install": "^0.13.0",
+    "mediasoup": "3.6.9",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
-    "rxjs": "^6.5.4",
-    "@spryrocks/config-node": "^1.0.2",
-    "mediasoup": "^3.5.15"
+    "rxjs": "^6.5.4"
   },
   "devDependencies": {
     "@nestjs/cli": "^7.0.0",
     "@nestjs/schematics": "^7.0.0",
     "@spryrocks/eslint-config": "^0.1.4",
     "@types/node": "^13.9.1",
+    "husky": "^4.2.5",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.6.2",
     "tsconfig-paths": "^3.9.0",
-    "typescript": "^3.7.4",
-    "husky": "^4.2.5"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "yarn compile && yarn lint"
-    }
+    "typescript": "^3.7.4"
   }
 }

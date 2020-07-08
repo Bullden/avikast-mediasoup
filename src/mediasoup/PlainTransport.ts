@@ -5,15 +5,16 @@ import Consumer from './Consumer';
 import {Filter, matchAppData} from 'mediasoup/Utils';
 import {BaseEntity} from 'mediasoup/BaseEntity';
 import {MediaKind} from 'entities/Mediasoup';
+import {SrtpParameters} from 'mediasoup/lib/SrtpParameters';
 
-export default class WebRtcTransport extends BaseEntity {
+export default class PlainTransport extends BaseEntity {
   public readonly producers: Array<Producer> = [];
 
   public readonly consumers: Array<Consumer> = [];
 
   constructor(
     private readonly mediasoup: IMediasoupInternal,
-    private readonly instance: types.WebRtcTransport,
+    private readonly instance: types.PlainTransport,
   ) {
     super();
   }
@@ -26,28 +27,12 @@ export default class WebRtcTransport extends BaseEntity {
     return this.instance.id;
   }
 
-  public get iceCandidates() {
-    return this.instance.iceCandidates;
-  }
-
-  public get iceParameters() {
-    return this.instance.iceParameters;
-  }
-
-  public get dtlsParameters() {
-    return this.instance.dtlsParameters;
-  }
-
   public get appData() {
     return this.instance.appData;
   }
 
   public get getProducers() {
     return this.producers;
-  }
-
-  public async connectToRouter(dtlsParameters: types.DtlsParameters): Promise<void> {
-    await this.instance.connect({dtlsParameters});
   }
 
   public async createProducer(
@@ -64,7 +49,6 @@ export default class WebRtcTransport extends BaseEntity {
         appData,
       }),
     );
-    console.log('producer created with id', producer.id);
     this.producers.push(producer);
     return producer;
   }
@@ -98,7 +82,7 @@ export default class WebRtcTransport extends BaseEntity {
     return undefined;
   }
 
-  public get dtlsState() {
-    return this.instance.dtlsState;
+  public async connect(ip?: string, port?: number, rtcpPort?: number): Promise<void> {
+    return this.instance.connect({ip, port, rtcpPort});
   }
 }

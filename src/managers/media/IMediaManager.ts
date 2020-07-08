@@ -6,8 +6,9 @@ import {
   RouterOptions,
   TransportOptions,
 } from 'entities/Mediasoup';
+import PlainRtpTransport from 'mediasoup/PlainTransport';
 
-export default abstract class IMediasoupManager {
+export default abstract class IMediaManager {
   abstract createRouter(roomId: string): Promise<RouterOptions>;
 
   abstract createTransport(
@@ -16,6 +17,13 @@ export default abstract class IMediasoupManager {
     direction: 'send' | 'receive',
     clientId: string,
   ): Promise<TransportOptions>;
+
+  abstract createPlainTransport(
+    roomId: string,
+    userId: string,
+    direction: 'send' | 'receive',
+    clientId: string,
+  ): Promise<PlainRtpTransport>;
 
   abstract connectTransport(
     roomId: string,
@@ -51,9 +59,24 @@ export default abstract class IMediasoupManager {
     userId: string,
   ): Promise<ProducerOptions> | undefined;
 
+  abstract findProducer(
+    roomId: string,
+    userId: string,
+  ): Promise<ProducerOptions> | undefined;
+
   abstract findConsumer(
     roomId: string,
     clientId: string,
     userId: string,
   ): Promise<ConsumerOptions> | undefined;
+
+  abstract startRecord(
+    roomId: string,
+    userId: string,
+    producerId: string,
+  ): Promise<boolean>;
+
+  abstract stopRecord(roomId: string): Promise<void>;
+
+  abstract test(): Promise<void>;
 }

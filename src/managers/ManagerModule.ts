@@ -1,19 +1,23 @@
 import {Module} from '@nestjs/common';
 import {MediasoupModule} from 'mediasoup/MediasoupModule';
-import IMediasoupManager from './mediasoup/IMediasoupManager';
-import MediasoupManager from './mediasoup/MediasoupManager';
+import IMediaManager from 'managers/media/IMediaManager';
+import MediaManager from 'managers/media/MediaManager';
 import ILogger from 'utils/ILogger';
 import Logger from 'utils/Logger';
+import {RecordModule} from 'services/record/RecordModule';
+import {ConfigModule} from 'services/config/ConfigModule';
 
 @Module({
   imports: [
     //
     MediasoupModule,
+    RecordModule,
+    ConfigModule,
   ],
   providers: [
     {
-      provide: IMediasoupManager,
-      useClass: MediasoupManager,
+      provide: IMediaManager,
+      useClass: MediaManager,
     },
     {
       provide: ILogger,
@@ -22,7 +26,7 @@ import Logger from 'utils/Logger';
   ],
   exports: [
     //
-    IMediasoupManager,
+    IMediaManager,
   ],
 })
 export class ManagerModule {}

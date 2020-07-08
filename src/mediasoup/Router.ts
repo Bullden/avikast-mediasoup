@@ -3,9 +3,13 @@ import IMediasoupInternal from './IMediasoupInternal';
 import Transport from './WebRtcTransport';
 import {BaseEntity} from 'mediasoup/BaseEntity';
 import {Filter} from 'mediasoup/Utils';
+import PlainRtpTransport from './PlainTransport';
+import {IConfigService} from '@spryrocks/config-node';
 
 export default class Router extends BaseEntity {
   private readonly transports: Array<Transport> = [];
+
+  private readonly plainTransports: Array<PlainRtpTransport> = [];
 
   constructor(
     private readonly mediasoup: IMediasoupInternal,
@@ -32,6 +36,20 @@ export default class Router extends BaseEntity {
       }),
     );
     this.transports.push(transport);
+    return transport;
+  }
+
+  public async createPlainTransport(appData: Filter, configService: IConfigService) {
+    const transport = new PlainRtpTransport(
+      this.mediasoup,
+      await this.instance.createPlainTransport({
+        listenIp: configService.get('LISTEN_IP'),
+        comedia: false,
+        rtcpMux: false,
+        appData,
+      }),
+    );
+    this.plainTransports.push(transport);
     return transport;
   }
 

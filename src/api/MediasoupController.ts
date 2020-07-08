@@ -1,5 +1,5 @@
 import {Controller} from '@nestjs/common';
-import {IMediasoupManager} from 'managers';
+import {IMediaManager} from 'managers';
 import {MessagePattern} from './enhancers';
 import {
   ConnectTransportRequest,
@@ -18,12 +18,16 @@ import {
   GetProducersResponse,
   GetRouterRequest,
   GetRouterResponse,
+  StopRecordingRequest,
+  StopRecordingResponse,
+  StartRecordingRequest,
+  StartRecordingResponse,
 } from 'api/entities';
 import {Direction, ProducerOptions} from 'entities/Mediasoup';
 
 @Controller()
 export default class MediasoupController {
-  constructor(private readonly roomManager: IMediasoupManager) {}
+  constructor(private readonly roomManager: IMediaManager) {}
 
   @MessagePattern({area: 'router', action: 'create'})
   async createRouter(request: CreateRouterRequest): Promise<CreateRouterResponse> {
@@ -129,6 +133,32 @@ export default class MediasoupController {
           rtpParameters: producer.rtpParameters,
         }),
       ),
+    };
+  }
+
+  @MessagePattern({area: 'recording', action: 'start'})
+  async startRecording(request: StartRecordingRequest): Promise<StartRecordingResponse> {
+    const response = await this.roomManager.startRecord(
+      request.roomId,
+      request.userId,
+      request.producerId,
+    );
+    if (response === undefined) throw new Error(`API recording has not been started`);
+    return {
+      response,
+    };
+  }
+
+  @MessagePattern({area: 'recording', action: 'stop'})
+  async stopRecording(request: StopRecordingRequest): Promise<StopRecordingResponse> {
+    const response = await this.roomManager.startRecord(
+      request.roomId,
+      request.userId,
+      request.producerId,
+    );
+    if (response === undefined) throw new Error(`API recording has not been started`);
+    return {
+      response,
     };
   }
 }
