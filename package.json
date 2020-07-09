@@ -21,8 +21,6 @@
     "@nestjs/microservices": "^7.1.0",
     "@spryrocks/config-node": "^1.0.2",
     "@types/fluent-ffmpeg": "2.1.14",
-    "ffmpeg": "0.0.4",
-    "fluent-ffmpeg": "2.1.2",
     "install": "^0.13.0",
     "mediasoup": "3.6.9",
     "reflect-metadata": "^0.1.13",
