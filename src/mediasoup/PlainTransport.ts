@@ -5,7 +5,6 @@ import Consumer from './Consumer';
 import {Filter, matchAppData} from 'mediasoup/Utils';
 import {BaseEntity} from 'mediasoup/BaseEntity';
 import {MediaKind} from 'entities/Mediasoup';
-import {SrtpParameters} from 'mediasoup/lib/SrtpParameters';
 
 export default class PlainTransport extends BaseEntity {
   public readonly producers: Array<Producer> = [];

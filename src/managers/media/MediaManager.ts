@@ -7,6 +7,7 @@ import {types} from 'mediasoup';
 import ILogger from 'utils/ILogger';
 import IRecordService from 'services/record/IRecordSevice';
 import {IConfigService} from '@spryrocks/config-node';
+import childProcess from 'child_process';
 
 @Injectable()
 export default class MediaManager extends IMediaManager {
@@ -192,9 +193,6 @@ export default class MediaManager extends IMediaManager {
 
   // eslint-disable-next-line class-methods-use-this
   async startRecord(roomId: string, userId: string, producerId: string) {
-    console.log(
-      `start recording, roomId ${roomId},userId ${userId}, producer id: ${producerId}, `,
-    );
     const router = await this.findRouter(roomId);
     router.rtpCapabilities.codecs?.find((c) => c.mimeType === 'video/H264');
     const plainTransport = await router.createPlainTransport(
@@ -225,32 +223,32 @@ export default class MediaManager extends IMediaManager {
     // newConsumer;
   }
 
-  // eslint-disable-next-line class-methods-use-this
+  // eslint-disable-next-line class-methods-use-this,@typescript-eslint/no-unused-vars
   async stopRecord(roomId: string) {
-    console.log('stopRecord', roomId);
+    // console.log('stopRecord', roomId);
   }
 
+  // eslint-disable-next-line class-methods-use-this
   async test() {
-    const Process = require('child_process');
-
     // Return a Promise that can be awaited
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     let recResolve;
-    const promise = new Promise((res) => {
-      recResolve = res;
-    });
+    // const promise = new Promise((res) => {
+    //   recResolve = res;
+    // });
 
     // const useAudio = audioEnabled();
     // const useVideo = videoEnabled();
     // const useH264 = h264Enabled();
 
-    let cmdInputPath = `/Users/naumenko/git/avikast/avikast-mediasoup/recording/input-vp8.sdp`;
-    let cmdOutputPath = `/Users/naumenko/git/avikast/avikast-mediasoup/recording/output-ffmpeg-vp8.webm`;
+    const cmdInputPath = `/Users/naumenko/git/avikast/avikast-mediasoup/recording/input-vp8.sdp`;
+    const cmdOutputPath = `/Users/naumenko/git/avikast/avikast-mediasoup/recording/output-ffmpeg-vp8.webm`;
     let cmdCodec = '';
-    let cmdFormat = '-f webm -flags +global_header';
+    const cmdFormat = '-f webm -flags +global_header';
 
     // Ensure correct FFmpeg version is installed
-    const ffmpegOut = Process.execSync('ffmpeg -version', {encoding: 'utf8'});
+    const ffmpegOut = childProcess.execSync('ffmpeg -version', {encoding: 'utf8'});
     const ffmpegVerMatch = /ffmpeg version (\d+)\.(\d+)\.(\d+)/.exec(ffmpegOut);
     let ffmpegOk = false;
     if (ffmpegOut.startsWith('ffmpeg version git')) {
@@ -266,26 +264,11 @@ export default class MediaManager extends IMediaManager {
       }
     }
 
-    if (false) {
-      console.error('FFmpeg >= 4.0.0 not found in $PATH; please install it');
-      process.exit(1);
+    if (ffmpegOk) {
+      throw new Error('FFmpeg >= 4.0.0 not found in $PATH; please install it');
     }
 
-    if (false) {
-      cmdCodec += ' -map 0:a:0 -c:a copy';
-    }
-    if (true) {
-      cmdCodec += ' -map 0:v:0 -c:v copy';
-
-      if (false) {
-        cmdInputPath = `/server/${__dirname}/recording/input-h264.sdp`;
-        cmdOutputPath = `/server/${__dirname}/recording/dich.mp4`;
-
-        // "-strict experimental" is required to allow storing
-        // OPUS audio into MP4 container
-        cmdFormat = '-f mp4 -strict experimental';
-      }
-    }
+    cmdCodec += ' -map 0:v:0 -c:v copy';
 
     // Run process
     const cmdProgram = 'ffmpeg'; // Found through $PATH
@@ -304,9 +287,7 @@ export default class MediaManager extends IMediaManager {
       .join(' ')
       .trim();
 
-    console.log(`Run command: ${cmdProgram} ${cmdArgStr}`);
-    const recProcess = Process.spawn(cmdProgram, cmdArgStr.split(/\s+/));
-    // @ts-ignore
+    const recProcess = childProcess.spawn(cmdProgram, cmdArgStr.split(/\s+/));
     // recProcess.on('error', (err) => {
     //   console.error('Recording process error:', err);
     // });
@@ -327,17 +308,19 @@ export default class MediaManager extends IMediaManager {
     // });
 
     // FFmpeg writes its logs to stderr
+    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
     // @ts-ignore
     recProcess.stderr.on('data', (chunk) => {
       chunk
         .toString()
         .split(/\r?\n/g)
         .filter(Boolean) // Filter out empty strings
+        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
         // @ts-ignore
         .forEach((line) => {
-          console.log(line);
           if (line.startsWith('ffmpeg version')) {
             setTimeout(() => {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
               // @ts-ignore
               recResolve();
             }, 1000);

@@ -64,7 +64,6 @@ export default class WebRtcTransport extends BaseEntity {
         appData,
       }),
     );
-    console.log('producer created with id', producer.id);
     this.producers.push(producer);
     return producer;
   }
