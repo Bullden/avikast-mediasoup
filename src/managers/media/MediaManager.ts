@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import {Injectable} from '@nestjs/common';
 import IMediaManager from 'managers/media/IMediaManager';
 import IMediasoup from 'mediasoup/IMediasoup';
@@ -7,7 +8,6 @@ import {types} from 'mediasoup';
 import ILogger from 'utils/ILogger';
 import IRecordService from 'services/record/IRecordSevice';
 import {IConfigService} from '@spryrocks/config-node';
-import childProcess from 'child_process';
 
 @Injectable()
 export default class MediaManager extends IMediaManager {
@@ -18,6 +18,7 @@ export default class MediaManager extends IMediaManager {
     private readonly configService: IConfigService,
   ) {
     super();
+    // eslint-disable-next-line global-require
   }
 
   async createRouter(roomId: string) {
@@ -192,7 +193,15 @@ export default class MediaManager extends IMediaManager {
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async startRecord(roomId: string, userId: string, producerId: string) {
+  async startRecording(
+    roomId: string,
+    userId: string,
+    producerId: string,
+    audioProducerId?: string,
+  ) {
+    console.log(
+      `start recording, roomId ${roomId},userId ${userId}, producer id: ${producerId}, `,
+    );
     const router = await this.findRouter(roomId);
     router.rtpCapabilities.codecs?.find((c) => c.mimeType === 'video/H264');
     const plainTransport = await router.createPlainTransport(
@@ -202,132 +211,41 @@ export default class MediaManager extends IMediaManager {
       },
       this.configService,
     );
-    await plainTransport.connect('192.168.1.5', 3000, 3005);
-    // const oldConsumer = this.findConsumer(roomId, clientId, userId);
+    await plainTransport.connect('127.0.0.1', 5006, 5007);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const newConsumer = await plainTransport.createConsumer(
+    const consumer = await plainTransport.createConsumer(
       producerId,
       router.rtpCapabilities,
-      {
-        roomId,
-        userId,
-      },
+      {roomId, userId},
     );
-    await this.test();
-    return true;
-    // const codec = global.mediasoup.router.rtpCapabilities.codecs.find(
-    //     (c) => c.mimeType === "video/H264"
-    // );
-    // const cmdInputPath = `${__dirname}/recording/input-h264.sdp`;
-    // const cmdOutputPath = `${__dirname}/recording/output-ffmpeg-h264.mp4`;
-    // newConsumer;
-  }
+    if (audioProducerId) {
+      const plainTransport = await router.createPlainTransport(
+        {
+          roomId,
+          userId,
+        },
+        this.configService,
+      );
+      await plainTransport.connect('127.0.0.1', 5004, 5005);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const consumer = await plainTransport.createConsumer(
+        audioProducerId,
+        router.rtpCapabilities,
+        {roomId, userId},
+      );
+    }
 
-  // eslint-disable-next-line class-methods-use-this,@typescript-eslint/no-unused-vars
-  async stopRecord(roomId: string) {
-    // console.log('stopRecord', roomId);
+    return this.recordService.startRecording(roomId, userId, producerId, consumer);
   }
 
   // eslint-disable-next-line class-methods-use-this
-  async test() {
-    // Return a Promise that can be awaited
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore
-    let recResolve;
-    // const promise = new Promise((res) => {
-    //   recResolve = res;
-    // });
-
-    // const useAudio = audioEnabled();
-    // const useVideo = videoEnabled();
-    // const useH264 = h264Enabled();
-
-    const cmdInputPath = `/Users/naumenko/git/avikast/avikast-mediasoup/recording/input-vp8.sdp`;
-    const cmdOutputPath = `/Users/naumenko/git/avikast/avikast-mediasoup/recording/output-ffmpeg-vp8.webm`;
-    let cmdCodec = '';
-    const cmdFormat = '-f webm -flags +global_header';
-
-    // Ensure correct FFmpeg version is installed
-    const ffmpegOut = childProcess.execSync('ffmpeg -version', {encoding: 'utf8'});
-    const ffmpegVerMatch = /ffmpeg version (\d+)\.(\d+)\.(\d+)/.exec(ffmpegOut);
-    let ffmpegOk = false;
-    if (ffmpegOut.startsWith('ffmpeg version git')) {
-      // Accept any Git build (it's up to the developer to ensure that a recent
-      // enough version of the FFmpeg source code has been built)
-      ffmpegOk = true;
-    } else if (ffmpegVerMatch) {
-      const ffmpegVerMajor = parseInt(ffmpegVerMatch[1], 10);
-      const ffmpegVerMinor = parseInt(ffmpegVerMatch[2], 10);
-      const ffmpegVerPatch = parseInt(ffmpegVerMatch[3], 10);
-      if (ffmpegVerMajor >= 4 && ffmpegVerMinor >= 0 && ffmpegVerPatch >= 0) {
-        ffmpegOk = true;
-      }
-    }
-
-    if (ffmpegOk) {
-      throw new Error('FFmpeg >= 4.0.0 not found in $PATH; please install it');
-    }
-
-    cmdCodec += ' -map 0:v:0 -c:v copy';
-
-    // Run process
-    const cmdProgram = 'ffmpeg'; // Found through $PATH
-    const cmdArgStr = [
-      '-nostdin',
-      '-protocol_whitelist file,rtp,udp',
-      // "-loglevel debug",
-      // "-analyzeduration 5M",
-      // "-probesize 5M",
-      '-fflags +genpts',
-      `-i ${cmdInputPath}`,
-      cmdCodec,
-      cmdFormat,
-      `-y ${cmdOutputPath}`,
-    ]
-      .join(' ')
-      .trim();
-
-    const recProcess = childProcess.spawn(cmdProgram, cmdArgStr.split(/\s+/));
-    // recProcess.on('error', (err) => {
-    //   console.error('Recording process error:', err);
-    // });
-
-    // recProcess.on('exit', (code, signal) => {
-    //   console.log('Recording process exit, code: %d, signal: %s', code, signal);
-    //
-    //   global.recProcess = null;
-    //   stopMediasoupRtp();
-    //
-    //   if (!signal || signal === 'SIGINT') {
-    //     console.log('Recording stopped');
-    //   } else {
-    //     console.warn(
-    //       "Recording process didn't exit cleanly, output file might be corrupt",
-    //     );
-    //   }
-    // });
-
-    // FFmpeg writes its logs to stderr
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-    // @ts-ignore
-    recProcess.stderr.on('data', (chunk) => {
-      chunk
-        .toString()
-        .split(/\r?\n/g)
-        .filter(Boolean) // Filter out empty strings
-        // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-        // @ts-ignore
-        .forEach((line) => {
-          if (line.startsWith('ffmpeg version')) {
-            setTimeout(() => {
-              // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
-              // @ts-ignore
-              recResolve();
-            }, 1000);
-          }
-        });
-    });
-
-    // return promise;
+  async stopRecording(
+    roomId: string,
+    userId: string,
+    producerId: string,
+    audioProducerId?: string,
+  ) {
+    console.log(roomId, userId, producerId, audioProducerId);
+    return this.recordService.stopRecording(roomId);
   }
 }

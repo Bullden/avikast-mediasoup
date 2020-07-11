@@ -10,6 +10,7 @@ export const mediaCodecs: Array<RtpCodecCapability> = [
   {
     kind: 'video',
     mimeType: 'video/H264',
+    preferredPayloadType: 125,
     clockRate: 90000,
     parameters: {
       'packetization-mode': 1,

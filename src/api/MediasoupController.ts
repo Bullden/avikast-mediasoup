@@ -138,10 +138,11 @@ export default class MediasoupController {
 
   @MessagePattern({area: 'recording', action: 'start'})
   async startRecording(request: StartRecordingRequest): Promise<StartRecordingResponse> {
-    const response = await this.roomManager.startRecord(
+    const response = await this.roomManager.startRecording(
       request.roomId,
       request.userId,
       request.producerId,
+      request.audioProducerId,
     );
     if (response === undefined) throw new Error(`API recording has not been started`);
     return {
@@ -151,10 +152,11 @@ export default class MediasoupController {
 
   @MessagePattern({area: 'recording', action: 'stop'})
   async stopRecording(request: StopRecordingRequest): Promise<StopRecordingResponse> {
-    const response = await this.roomManager.startRecord(
+    const response = await this.roomManager.stopRecording(
       request.roomId,
       request.userId,
       request.producerId,
+      request.audioProducerId,
     );
     if (response === undefined) throw new Error(`API recording has not been started`);
     return {

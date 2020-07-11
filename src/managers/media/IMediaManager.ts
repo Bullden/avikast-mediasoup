@@ -70,13 +70,17 @@ export default abstract class IMediaManager {
     userId: string,
   ): Promise<ConsumerOptions> | undefined;
 
-  abstract startRecord(
+  abstract startRecording(
     roomId: string,
     userId: string,
     producerId: string,
+    audioProducerId?: string,
   ): Promise<boolean>;
 
-  abstract stopRecord(roomId: string): Promise<void>;
-
-  abstract test(): Promise<void>;
+  abstract stopRecording(
+    roomId: string,
+    userId: string,
+    producerId: string,
+    audioProducerId?: string,
+  ): Promise<boolean>;
 }
