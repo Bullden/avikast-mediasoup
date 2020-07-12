@@ -1,4 +1,4 @@
-/* eslint-disable global-require,@typescript-eslint/no-unused-vars,no-console,@typescript-eslint/ban-ts-ignore */
+/* eslint-disable global-require,@typescript-eslint/no-unused-vars,no-console */
 import IRecordService from 'services/record/IRecordSevice';
 import Worker from 'mediasoup/Worker';
 import Router from 'mediasoup/Router';
@@ -34,7 +34,8 @@ export default class RecordService extends IRecordService {
     const video = true;
     const h264 = true;
     // TODO set vp8
-    let cmdInputPath = `${this.configDirectory}/input-h264.sdp`;
+    let videoPath = `${this.configDirectory}/videoInput-h264.sdp`;
+    let audioPath = `${this.configDirectory}/audioInput-vp8.sdp`;
     let cmdOutputPath = `${this.recordingsDirectory}/output-ffmpeg-vp8.webm`;
     let cmdCodec = '';
     let cmdFormat = '-f webm -flags +global_header';
@@ -70,7 +71,7 @@ export default class RecordService extends IRecordService {
       cmdCodec += ' -map 0:v:0 -c:v copy';
 
       if (h264) {
-        cmdInputPath = `${this.configDirectory}/input-h264.sdp`;
+        // cmdInputPath = `${this.configDirectory}/input-h264.sdp`;
         cmdOutputPath = `${this.recordingsDirectory}/${year}.${month}.${day}-${hour}:${minute}:${second}vp8.avi`;
         cmdFormat = '-f mp4 -strict experimental';
       }
@@ -83,7 +84,8 @@ export default class RecordService extends IRecordService {
       // "-analyzeduration 5M",
       // "-probesize 5M",
       '-fflags +genpts',
-      `-i ${cmdInputPath}`,
+      `-i ${videoPath}`,
+      `-i ${audioPath}`,
       cmdCodec,
       cmdFormat,
       `-y ${cmdOutputPath}`,
