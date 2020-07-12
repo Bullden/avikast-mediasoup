@@ -34,8 +34,7 @@ export default class RecordService extends IRecordService {
     const video = true;
     const h264 = true;
     // TODO set vp8
-    let videoPath = `${this.configDirectory}/videoInput-h264.sdp`;
-    let audioPath = `${this.configDirectory}/audioInput-vp8.sdp`;
+    let cmdInputPath = `${this.configDirectory}/input-h264.sdp`;
     let cmdOutputPath = `${this.recordingsDirectory}/output-ffmpeg-vp8.webm`;
     let cmdCodec = '';
     let cmdFormat = '-f webm -flags +global_header';
@@ -71,7 +70,7 @@ export default class RecordService extends IRecordService {
       cmdCodec += ' -map 0:v:0 -c:v copy';
 
       if (h264) {
-        // cmdInputPath = `${this.configDirectory}/input-h264.sdp`;
+        cmdInputPath = `${this.configDirectory}/input-h264.sdp`;
         cmdOutputPath = `${this.recordingsDirectory}/${year}.${month}.${day}-${hour}:${minute}:${second}vp8.avi`;
         cmdFormat = '-f mp4 -strict experimental';
       }
@@ -84,8 +83,7 @@ export default class RecordService extends IRecordService {
       // "-analyzeduration 5M",
       // "-probesize 5M",
       '-fflags +genpts',
-      `-i ${videoPath}`,
-      `-i ${audioPath}`,
+      `-i ${cmdInputPath}`,
       cmdCodec,
       cmdFormat,
       `-y ${cmdOutputPath}`,
@@ -95,10 +93,6 @@ export default class RecordService extends IRecordService {
 
     const recProcess = process.spawn(cmdProgram, cmdArgStr.split(/\s+/));
     this.processes.set(roomId, recProcess);
-    // setTimeout(() => {
-    //   recProcess.kill('SIGINT');
-    //   console.log('process kill');
-    // }, 10000);
     // @ts-ignore
     recProcess.stderr.on('data', (chunk) => {
       chunk
@@ -107,7 +101,6 @@ export default class RecordService extends IRecordService {
         .filter(Boolean)
         // @ts-ignore
         .forEach((line) => {
-          console.log(line);
           if (line.startsWith('ffmpeg version')) {
             setTimeout(() => {
               // @ts-ignore
@@ -121,7 +114,6 @@ export default class RecordService extends IRecordService {
   }
 
   async stopRecording(roomId: string) {
-    console.log(roomId);
     const process = this.processes.get(roomId);
     if (!process) throw new Error(`There is now such a process with room id ${roomId}`);
     process.kill('SIGINT');

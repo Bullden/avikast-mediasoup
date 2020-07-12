@@ -199,9 +199,6 @@ export default class MediaManager extends IMediaManager {
     producerId: string,
     audioProducerId?: string,
   ) {
-    console.log(
-      `start recording, roomId ${roomId},userId ${userId}, producer id: ${producerId}, `,
-    );
     const router = await this.findRouter(roomId);
     router.rtpCapabilities.codecs?.find((c) => c.mimeType === 'video/H264');
     const plainTransport = await router.createPlainTransport(
@@ -211,7 +208,7 @@ export default class MediaManager extends IMediaManager {
       },
       this.configService,
     );
-    await plainTransport.connect('127.0.0.1', 5006, 5007);
+    await plainTransport.connect('127.0.0.1', 5006);
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const consumer = await plainTransport.createConsumer(
       producerId,
@@ -219,16 +216,16 @@ export default class MediaManager extends IMediaManager {
       {roomId, userId},
     );
     if (audioProducerId) {
-      const plainTransport = await router.createPlainTransport(
+      const audioPlainTransport = await router.createPlainTransport(
         {
           roomId,
           userId,
         },
         this.configService,
       );
-      await plainTransport.connect('127.0.0.1', 5004, 5005);
+      await audioPlainTransport.connect('127.0.0.1', 5004);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const consumer = await plainTransport.createConsumer(
+      const audioConsumer = await audioPlainTransport.createConsumer(
         audioProducerId,
         router.rtpCapabilities,
         {roomId, userId},
@@ -236,6 +233,7 @@ export default class MediaManager extends IMediaManager {
     }
 
     return this.recordService.startRecording(roomId, userId, producerId, consumer);
+    // return true;
   }
 
   // eslint-disable-next-line class-methods-use-this
@@ -245,7 +243,6 @@ export default class MediaManager extends IMediaManager {
     producerId: string,
     audioProducerId?: string,
   ) {
-    console.log(roomId, userId, producerId, audioProducerId);
     return this.recordService.stopRecording(roomId);
   }
 }
