@@ -74,4 +74,16 @@ export default class Router extends BaseEntity {
   get appData() {
     return this.instance.appData;
   }
+
+  public leaveRoom(userId: string) {
+    this.transports.forEach((transport) => {
+      if (transport.appData) {
+        return transport.appData.userId !== userId;
+      }
+    });
+  }
+
+  public closeRouter() {
+    this.instance.close();
+  }
 }

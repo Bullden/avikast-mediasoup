@@ -36,4 +36,20 @@ export default class Worker extends BaseEntity {
   get appData() {
     return this.instance.appData;
   }
+
+  get getRouters() {
+    return this._routers;
+  }
+
+  public removeRouter(roomId: string) {
+    const router = this.routers.find((router) => router.matchAppData({roomId}));
+    if (!router) throw new Error('Close router: router has not been found');
+    this._routers.filter((element) => {
+      return element.roomId !== router.roomId;
+    });
+    // const routerArr = this._routers.filter((element) => {
+    //   return element.roomId !== router.roomId;
+    // });
+    // this._routers.push(...routerArr);
+  }
 }

@@ -73,14 +73,18 @@ export default abstract class IMediaManager {
   abstract startRecording(
     roomId: string,
     userId: string,
-    producerId: string,
+    producerId?: string,
     audioProducerId?: string,
   ): Promise<boolean>;
 
   abstract stopRecording(
     roomId: string,
     userId: string,
-    producerId: string,
+    producerId?: string,
     audioProducerId?: string,
   ): Promise<boolean>;
+
+  abstract leaveRoom(roomId: string, userId: string): Promise<boolean>;
+
+  abstract closeRouter(roomId: string): Promise<boolean>;
 }

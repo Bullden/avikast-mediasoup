@@ -84,4 +84,8 @@ export default class PlainTransport extends BaseEntity {
   public async connect(ip?: string, port?: number, rtcpPort?: number): Promise<void> {
     return this.instance.connect({ip, port, rtcpPort});
   }
+
+  public get transport() {
+    return this.instance;
+  }
 }

@@ -196,43 +196,60 @@ export default class MediaManager extends IMediaManager {
   async startRecording(
     roomId: string,
     userId: string,
-    producerId: string,
+    producerId?: string,
     audioProducerId?: string,
   ) {
+    console.log(producerId, 'producerId MANAGER');
+    console.log(audioProducerId, 'audioProducerId MANAGER');
+    console.log(
+      `start recording, roomId ${roomId},userId ${userId}, producer id: ${producerId}, `,
+    );
     const router = await this.findRouter(roomId);
     router.rtpCapabilities.codecs?.find((c) => c.mimeType === 'video/H264');
-    const plainTransport = await router.createPlainTransport(
-      {
-        roomId,
-        userId,
-      },
-      this.configService,
-    );
-    await plainTransport.connect('127.0.0.1', 5006);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const consumer = await plainTransport.createConsumer(
-      producerId,
-      router.rtpCapabilities,
-      {roomId, userId},
-    );
-    if (audioProducerId) {
-      const audioPlainTransport = await router.createPlainTransport(
+    if (producerId) {
+      const producerIdTransport = await router.createPlainTransport(
         {
           roomId,
           userId,
         },
         this.configService,
       );
-      await audioPlainTransport.connect('127.0.0.1', 5004);
+      await producerIdTransport.connect('127.0.0.1', 5006, 5007);
+      console.log('producerId', producerId);
+      console.log('audioProducerId', audioProducerId);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const audioConsumer = await audioPlainTransport.createConsumer(
+      const videoConsumer = await producerIdTransport.createConsumer(
+        producerId,
+        router.rtpCapabilities,
+        {roomId, userId},
+      );
+      producerIdTransport.transport.on('connect', () => {
+        console.log('audio transport connect');
+      });
+    }
+    if (audioProducerId) {
+      const audioTransport = await router.createPlainTransport(
+        {
+          roomId,
+          userId,
+        },
+        this.configService,
+      );
+      await audioTransport.connect('127.0.0.1', 5004, 5005);
+      console.log('producerId', producerId);
+      console.log('audioProducerId', audioProducerId);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const audioConsumer = await audioTransport.createConsumer(
         audioProducerId,
         router.rtpCapabilities,
         {roomId, userId},
       );
+      audioTransport.transport.on('connect', () => {
+        console.log('audio transport connect');
+      });
     }
 
-    return this.recordService.startRecording(roomId, userId, producerId, consumer);
+    return this.recordService.startRecording(roomId);
     // return true;
   }
 
@@ -240,9 +257,35 @@ export default class MediaManager extends IMediaManager {
   async stopRecording(
     roomId: string,
     userId: string,
-    producerId: string,
+    producerId?: string,
     audioProducerId?: string,
   ) {
+    console.log(userId, producerId, audioProducerId, 'stop record');
     return this.recordService.stopRecording(roomId);
+  }
+
+  async leaveRoom(roomId: string, userId: string) {
+    const router = await this.findRouter(roomId);
+    if (!router) throw new Error(`leaveRoom: router not been found, room Id: ${roomId}`);
+    const recvTransport = router.findTransport({userId, direction: 'receive'});
+    const sendTransport = router.findTransport({userId, direction: 'send'});
+    if (!recvTransport || !sendTransport)
+      throw new Error(`leaveRoom: router not been found, user Id: ${roomId}`);
+    if (recvTransport !== undefined) {
+      recvTransport.closeTransport();
+    }
+    if (sendTransport !== undefined) {
+      sendTransport.closeTransport();
+    }
+    return true;
+  }
+
+  async closeRouter(roomId: string) {
+    const router = await this.mediasoup.findRouter({roomId});
+    if (!router)
+      throw new Error(`closeRouter: worker has not been found, router: ${router}`);
+    router.closeRouter();
+    console.log(router, 'worker closeRouter');
+    return true;
   }
 }

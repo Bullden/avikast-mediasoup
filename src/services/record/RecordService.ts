@@ -1,4 +1,4 @@
-/* eslint-disable global-require,@typescript-eslint/no-unused-vars,no-console */
+/* eslint-disable global-require,@typescript-eslint/no-unused-vars,no-console,@typescript-eslint/ban-ts-ignore */
 import IRecordService from 'services/record/IRecordSevice';
 import Worker from 'mediasoup/Worker';
 import Router from 'mediasoup/Router';
@@ -17,12 +17,7 @@ export default class RecordService extends IRecordService {
     this.configDirectory = `${getProjectRoot()}/config`;
   }
 
-  async startRecording(
-    roomId: string,
-    userId: string,
-    producerId: string,
-    consumer: Consumer,
-  ) {
+  async startRecording(roomId: string) {
     const process = require('child_process');
     this.processes.set(roomId, process);
     // @ts-ignore
@@ -33,11 +28,12 @@ export default class RecordService extends IRecordService {
     const audio = true;
     const video = true;
     const h264 = true;
+    const exit = false;
     // TODO set vp8
     let cmdInputPath = `${this.configDirectory}/input-h264.sdp`;
-    let cmdOutputPath = `${this.recordingsDirectory}/output-ffmpeg-vp8.webm`;
+    let cmdOutputPath = `${this.recordingsDirectory}/output-ffmpeg-vp8.avi`;
     let cmdCodec = '';
-    let cmdFormat = '-f webm -flags +global_header';
+    let cmdFormat = '-f avi -flags +global_header';
     const ffmpegOut = process.execSync('ffmpeg -version', {encoding: 'utf8'});
     const ffmpegVerMatch = /ffmpeg version (\d+)\.(\d+)\.(\d+)/.exec(ffmpegOut);
     const date = new Date(Date.now());
@@ -59,22 +55,23 @@ export default class RecordService extends IRecordService {
         ffmpegOk = true;
       }
     }
-    if (false) {
+    if (exit) {
       console.error('FFmpeg >= 4.0.0 not found in $PATH; please install it');
       process.exit(1);
     }
     if (audio) {
-      cmdCodec += ' -map 0:a:0 -c:a copy';
+      cmdCodec += ' -map 0:a:0 -c:a aac';
     }
     if (video) {
       cmdCodec += ' -map 0:v:0 -c:v copy';
 
       if (h264) {
         cmdInputPath = `${this.configDirectory}/input-h264.sdp`;
-        cmdOutputPath = `${this.recordingsDirectory}/${year}.${month}.${day}-${hour}:${minute}:${second}vp8.avi`;
+        cmdOutputPath = `${this.recordingsDirectory}/${year}.${month}.${day}-${hour}:${minute}:${second}vp8.mp4`;
         cmdFormat = '-f mp4 -strict experimental';
       }
     }
+    console.log('record start');
     const cmdProgram = 'ffmpeg'; // Found through $PATH
     const cmdArgStr = [
       '-nostdin',
@@ -83,6 +80,7 @@ export default class RecordService extends IRecordService {
       // "-analyzeduration 5M",
       // "-probesize 5M",
       '-fflags +genpts',
+      '-use_wallclock_as_timestamps 1',
       `-i ${cmdInputPath}`,
       cmdCodec,
       cmdFormat,
@@ -101,6 +99,7 @@ export default class RecordService extends IRecordService {
         .filter(Boolean)
         // @ts-ignore
         .forEach((line) => {
+          console.log(line);
           if (line.startsWith('ffmpeg version')) {
             setTimeout(() => {
               // @ts-ignore

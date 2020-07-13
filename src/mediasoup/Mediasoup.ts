@@ -47,7 +47,34 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
     return undefined;
   }
 
+  public findWorker(roomId: string): Worker | undefined {
+    let worker;
+    // eslint-disable-next-line array-callback-return
+    this.workers.find((element) => {
+      worker = element.getRouters.find((router) => {
+        return router.roomId === roomId;
+        // if (router.roomId === roomId) {
+        //   console.log('worker found!');
+        // }
+      });
+    });
+    if (!worker) throw new Error('worker not exists');
+    return worker;
+  }
+
   getConfig(): MediasoupConfig {
     return this.config;
   }
+
+  getArray(): Worker[] {
+    return this.workers;
+  }
+
+  // public closeRouter(filter: Filter) {
+  //   for (const worker of this.workers) {
+  //     const router = worker.findRouter(filter);
+  //     if (router) return router;
+  //   }
+  //   return undefined;
+  // }
 }

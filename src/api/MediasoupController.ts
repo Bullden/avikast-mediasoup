@@ -24,6 +24,8 @@ import {
   StartRecordingResponse,
 } from 'api/entities';
 import {Direction, ProducerOptions} from 'entities/Mediasoup';
+import {LeaveRoomRequest, LeaveRoomResponse} from 'api/entities/LeaveRoom';
+import {CloseRouterRequest, CloseRouterResponse} from 'api/entities/CloseRouter';
 
 @Controller()
 export default class MediasoupController {
@@ -162,5 +164,17 @@ export default class MediasoupController {
     return {
       response,
     };
+  }
+
+  @MessagePattern({area: 'router', action: 'leave'})
+  async leaveRoom(request: LeaveRoomRequest): Promise<LeaveRoomResponse> {
+    const response = await this.roomManager.leaveRoom(request.roomId, request.userId);
+    return {response};
+  }
+
+  @MessagePattern({area: 'router', action: 'close'})
+  async closeRouter(request: CloseRouterRequest): Promise<CloseRouterResponse> {
+    const response = await this.roomManager.closeRouter(request.roomId);
+    return {response};
   }
 }
