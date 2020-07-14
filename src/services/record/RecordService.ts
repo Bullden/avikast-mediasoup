@@ -6,6 +6,7 @@ import Consumer from 'mediasoup/Consumer';
 import {RtpParameters} from 'mediasoup/lib/RtpParameters';
 import {ChildProcess} from 'child_process';
 import {getProjectRoot} from 'utils/FileSystemUtils';
+import ffmpegPath from 'ffmpeg-static';
 
 export default class RecordService extends IRecordService {
   private readonly processes: Map<string, ChildProcess> = new Map();
@@ -34,24 +35,7 @@ export default class RecordService extends IRecordService {
     let cmdOutputPath = `${this.recordingsDirectory}/output-ffmpeg-vp8.avi`;
     let cmdCodec = '';
     let cmdFormat = '-f avi -flags +global_header';
-    const ffmpegOut = process.execSync('ffmpeg -version', {encoding: 'utf8'});
-    const ffmpegVerMatch = /ffmpeg version (\d+)\.(\d+)\.(\d+)/.exec(ffmpegOut);
 
-    let ffmpegOk = false;
-    if (ffmpegOut.startsWith('ffmpeg version git')) {
-      ffmpegOk = true;
-    } else if (ffmpegVerMatch) {
-      const ffmpegVerMajor = parseInt(ffmpegVerMatch[1], 10);
-      const ffmpegVerMinor = parseInt(ffmpegVerMatch[2], 10);
-      const ffmpegVerPatch = parseInt(ffmpegVerMatch[3], 10);
-      if (ffmpegVerMajor >= 4 && ffmpegVerMinor >= 0 && ffmpegVerPatch >= 0) {
-        ffmpegOk = true;
-      }
-    }
-    if (exit) {
-      console.error('FFmpeg >= 4.0.0 not found in $PATH; please install it');
-      process.exit(1);
-    }
     if (audio) {
       cmdCodec += ' -map 0:a:0 -c:a aac';
     }
@@ -65,7 +49,6 @@ export default class RecordService extends IRecordService {
       }
     }
     console.log('record start');
-    const cmdProgram = 'ffmpeg'; // Found through $PATH
     const cmdArgStr = [
       '-nostdin',
       '-protocol_whitelist file,rtp,udp',
@@ -82,7 +65,7 @@ export default class RecordService extends IRecordService {
       .join(' ')
       .trim();
 
-    const recProcess = process.spawn(cmdProgram, cmdArgStr.split(/\s+/));
+    const recProcess = process.spawn(ffmpegPath, cmdArgStr.split(/\s+/));
     this.processes.set(roomId, recProcess);
     // @ts-ignore
     recProcess.stderr.on('data', (chunk) => {
