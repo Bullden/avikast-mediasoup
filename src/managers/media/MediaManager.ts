@@ -196,6 +196,7 @@ export default class MediaManager extends IMediaManager {
   async startRecording(
     roomId: string,
     userId: string,
+    recordId: string,
     producerId?: string,
     audioProducerId?: string,
   ) {
@@ -249,7 +250,7 @@ export default class MediaManager extends IMediaManager {
       });
     }
 
-    return this.recordService.startRecording(roomId);
+    return this.recordService.startRecording(roomId, recordId);
     // return true;
   }
 

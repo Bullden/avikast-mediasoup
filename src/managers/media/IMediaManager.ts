@@ -73,6 +73,7 @@ export default abstract class IMediaManager {
   abstract startRecording(
     roomId: string,
     userId: string,
+    recordId: string,
     producerId?: string,
     audioProducerId?: string,
   ): Promise<boolean>;

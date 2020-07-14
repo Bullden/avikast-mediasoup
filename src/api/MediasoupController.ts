@@ -143,6 +143,7 @@ export default class MediasoupController {
     const response = await this.roomManager.startRecording(
       request.roomId,
       request.userId,
+      request.recordId,
       request.producerId,
       request.audioProducerId,
     );

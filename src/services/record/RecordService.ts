@@ -17,7 +17,7 @@ export default class RecordService extends IRecordService {
     this.configDirectory = `${getProjectRoot()}/config`;
   }
 
-  async startRecording(roomId: string) {
+  async startRecording(roomId: string, recordId: string) {
     const process = require('child_process');
     this.processes.set(roomId, process);
     // @ts-ignore
@@ -36,13 +36,6 @@ export default class RecordService extends IRecordService {
     let cmdFormat = '-f avi -flags +global_header';
     const ffmpegOut = process.execSync('ffmpeg -version', {encoding: 'utf8'});
     const ffmpegVerMatch = /ffmpeg version (\d+)\.(\d+)\.(\d+)/.exec(ffmpegOut);
-    const date = new Date(Date.now());
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const day = date.getDay();
-    const hour = date.getHours();
-    const minute = date.getMinutes();
-    const second = date.getSeconds();
 
     let ffmpegOk = false;
     if (ffmpegOut.startsWith('ffmpeg version git')) {
@@ -67,7 +60,7 @@ export default class RecordService extends IRecordService {
 
       if (h264) {
         cmdInputPath = `${this.configDirectory}/input-h264.sdp`;
-        cmdOutputPath = `${this.recordingsDirectory}/${year}.${month}.${day}-${hour}:${minute}:${second}vp8.mp4`;
+        cmdOutputPath = `${this.recordingsDirectory}/${recordId}`;
         cmdFormat = '-f mp4 -strict experimental';
       }
     }
