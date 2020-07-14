@@ -11,5 +11,6 @@ WORKDIR /usr/src/app
 COPY package.json yarn.lock ./
 RUN yarn install --prod --frozen-lock
 COPY --from=build /app/dist dist
+COPY config config
 COPY .env* ./
 CMD ["yarn", "start:prod"]
