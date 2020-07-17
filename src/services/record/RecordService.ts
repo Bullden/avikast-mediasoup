@@ -48,7 +48,6 @@ export default class RecordService extends IRecordService {
         cmdFormat = '-f mp4 -strict experimental';
       }
     }
-    console.log('record start');
     const cmdArgStr = [
       '-nostdin',
       '-protocol_whitelist file,rtp,udp',

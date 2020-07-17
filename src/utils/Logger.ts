@@ -1,4 +1,4 @@
-/* eslint-disable class-methods-use-this */
+/* eslint-disable */
 import ILogger from 'utils/ILogger';
 
 export default class Logger extends ILogger {

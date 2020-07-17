@@ -3,7 +3,7 @@ import IMediasoup from './IMediasoup';
 import Worker from './Worker';
 import MediasoupConfig from 'mediasoup/MediasoupConfig';
 import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
-import {Filter, removeFromArray} from 'mediasoup/Utils';
+import {Filter} from 'mediasoup/Utils';
 import WorkerConfig from 'mediasoup/WorkerConfig';
 import Router from 'mediasoup/Router';
 
@@ -74,12 +74,4 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
     if (!worker) throw new Error('Worker not found');
     worker.closeRouter(router);
   }
-
-  // public closeRouter(filter: Filter) {
-  //   for (const worker of this.workers) {
-  //     const router = worker.findRouter(filter);
-  //     if (router) return router;
-  //   }
-  //   return undefined;
-  // }
 }

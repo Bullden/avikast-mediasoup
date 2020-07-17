@@ -63,12 +63,10 @@ export default abstract class Transport extends BaseEntity {
 
   public pushProducer(producer: Producer) {
     this.producers.push(producer);
-    console.log('PUSH PRODUCER', this.producers);
   }
 
   public pushConsumer(consumer: Consumer) {
     this.consumers.push(consumer);
-    console.log('PUSH CONSUMER', this.consumers);
   }
 
   public closeProducer(producer: Producer) {

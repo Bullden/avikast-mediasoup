@@ -9,8 +9,6 @@ import ILogger from 'utils/ILogger';
 import IRecordService from 'services/record/IRecordSevice';
 import {IConfigService} from '@spryrocks/config-node';
 import WebRtcTransport from 'mediasoup/WebRtcTransport';
-import Transport from 'mediasoup/Transport';
-import {removeFromArray} from 'mediasoup/Utils';
 
 @Injectable()
 export default class MediaManager extends IMediaManager {
@@ -27,7 +25,6 @@ export default class MediaManager extends IMediaManager {
   async createRouter(roomId: string) {
     const router = await this.mediasoup.createRouter({roomId});
     this.logger.routerLog('router created with roomId:', router.roomId);
-    console.log();
     return router;
   }
 
@@ -158,7 +155,6 @@ export default class MediaManager extends IMediaManager {
       userId,
     });
     this.logger.consumerLog('consumer created', consumer.id);
-    console.log('consumer created', consumer);
     return consumer;
   }
 
@@ -211,11 +207,6 @@ export default class MediaManager extends IMediaManager {
     producerId?: string,
     audioProducerId?: string,
   ) {
-    console.log(producerId, 'producerId MANAGER');
-    console.log(audioProducerId, 'audioProducerId MANAGER');
-    console.log(
-      `start recording, roomId ${roomId},userId ${userId}, producer id: ${producerId}, `,
-    );
     const router = await this.findRouter(roomId);
     router.rtpCapabilities.codecs?.find((c) => c.mimeType === 'video/H264');
     if (producerId) {
@@ -227,8 +218,6 @@ export default class MediaManager extends IMediaManager {
         this.configService,
       );
       await producerIdTransport.connect('127.0.0.1', 5006, 5007);
-      console.log('producerId', producerId);
-      console.log('audioProducerId', audioProducerId);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const videoConsumer = await producerIdTransport.createConsumer(
         producerId,
@@ -236,7 +225,7 @@ export default class MediaManager extends IMediaManager {
         {roomId, userId},
       );
       producerIdTransport.transport.on('connect', () => {
-        console.log('audio transport connect');
+        this.logger.log('audio transport connect');
       });
     }
     if (audioProducerId) {
@@ -248,16 +237,13 @@ export default class MediaManager extends IMediaManager {
         this.configService,
       );
       await audioTransport.connect('127.0.0.1', 5004, 5005);
-      console.log('producerId', producerId);
-      console.log('audioProducerId', audioProducerId);
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const audioConsumer = await audioTransport.createConsumer(
         audioProducerId,
         router.rtpCapabilities,
         {roomId, userId},
       );
       audioTransport.transport.on('connect', () => {
-        console.log('audio transport connect');
+        this.logger.consumerLog('audio transport connect', audioConsumer.id);
       });
     }
 
