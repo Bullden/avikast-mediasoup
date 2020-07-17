@@ -2,9 +2,8 @@ import {types} from 'mediasoup';
 import IMediasoupInternal from './IMediasoupInternal';
 import Producer from './Producer';
 import Consumer from './Consumer';
-import {Filter, matchAppData} from 'mediasoup/Utils';
+import {Filter, matchAppData, removeFromArray} from 'mediasoup/Utils';
 import {BaseEntity} from 'mediasoup/BaseEntity';
-import Router from 'mediasoup/Router';
 
 export default abstract class Transport extends BaseEntity {
   public readonly producers: Array<Producer> = [];
@@ -13,7 +12,6 @@ export default abstract class Transport extends BaseEntity {
 
   constructor(
     protected readonly mediasoup: IMediasoupInternal,
-    protected readonly baseRouter: Router,
     protected baseInstance: types.Transport,
   ) {
     super();
@@ -58,12 +56,9 @@ export default abstract class Transport extends BaseEntity {
   }
 
   public close() {
-    this.producers.forEach((producer) => {
-      producer.close();
-      console.log('close room producer iteration', producer.id);
-    });
+    this.producers.forEach(this.closeProducer);
+    this.consumers.forEach(this.closeConsumer);
     this.baseInstance.close();
-    this.baseRouter.removeTransport(this);
   }
 
   public pushProducer(producer: Producer) {
@@ -74,15 +69,13 @@ export default abstract class Transport extends BaseEntity {
     this.consumers.push(consumer);
   }
 
-  public removeProducer(prodcer: Producer) {
-    const index = this.producers.indexOf(prodcer);
-    if (index < 0) throw new Error('Transport not fount');
-    this.producers.splice(index, 1);
+  public closeProducer(producer: Producer) {
+    producer.close();
+    removeFromArray(this.producers, producer);
   }
 
-  public removeConsumer(consumer: Consumer) {
-    const index = this.consumers.indexOf(consumer);
-    if (index < 0) throw new Error('Transport not fount');
-    this.consumers.splice(index, 1);
+  public closeConsumer(consumer: Consumer) {
+    consumer.close();
+    removeFromArray(this.consumers, consumer);
   }
 }

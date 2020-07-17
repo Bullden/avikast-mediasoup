@@ -7,6 +7,4 @@ export interface CloseRouterRequest {
   roomId: string;
 }
 
-export interface CloseRouterResponse {
-  response: boolean;
-}
+export interface CloseRouterResponse {}

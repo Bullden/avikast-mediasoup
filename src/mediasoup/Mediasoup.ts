@@ -3,8 +3,9 @@ import IMediasoup from './IMediasoup';
 import Worker from './Worker';
 import MediasoupConfig from 'mediasoup/MediasoupConfig';
 import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
-import {Filter} from 'mediasoup/Utils';
+import {Filter, removeFromArray} from 'mediasoup/Utils';
 import WorkerConfig from 'mediasoup/WorkerConfig';
+import Router from 'mediasoup/Router';
 
 export default class Mediasoup extends IMediasoup implements IMediasoupInternal {
   private readonly workers: Array<Worker> = [];
@@ -68,6 +69,12 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
 
   getArray(): Worker[] {
     return this.workers;
+  }
+
+  closeRouter(router: Router) {
+    const worker = this.findWorker(router.roomId);
+    if (!worker) throw new Error('Worker not found');
+    worker.closeRouter(router);
   }
 
   // public closeRouter(filter: Filter) {

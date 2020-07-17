@@ -2,7 +2,7 @@ import {types} from 'mediasoup';
 import IMediasoupInternal from './IMediasoupInternal';
 import WebRtcTransport from './WebRtcTransport';
 import {BaseEntity} from 'mediasoup/BaseEntity';
-import {Filter} from 'mediasoup/Utils';
+import {Filter, removeFromArray} from 'mediasoup/Utils';
 import PlainRtpTransport from './PlainTransport';
 import {IConfigService} from '@spryrocks/config-node';
 import Transport from 'mediasoup/Transport';
@@ -25,7 +25,6 @@ export default class Router extends BaseEntity {
     const config = this.mediasoup.getConfig();
     const transport = new WebRtcTransport(
       this.mediasoup,
-      this,
       await this.instance.createWebRtcTransport({
         enableUdp: true,
         enableTcp: true,
@@ -89,16 +88,12 @@ export default class Router extends BaseEntity {
   }
 
   public close() {
-    this.transports.forEach((transport) => {
-      transport.close();
-    });
+    this.transports.forEach(this.closeTransport);
     this.instance.close();
-    return true;
   }
 
-  removeTransport(transport: Transport) {
-    const index = this.transports.indexOf(transport);
-    if (index < 0) throw new Error('Transport not fount');
-    this.transports.splice(index, 1);
+  public closeTransport(transport: Transport) {
+    transport.close();
+    removeFromArray(this.transports, transport);
   }
 }

@@ -4,15 +4,13 @@ import Producer from './Producer';
 import Consumer from './Consumer';
 import {MediaKind} from 'entities/Mediasoup';
 import Transport from 'mediasoup/Transport';
-import Router from 'mediasoup/Router';
 
 export default class WebRtcTransport extends Transport {
   constructor(
-    readonly mediasoup: IMediasoupInternal,
-    readonly router: Router,
+    mediasoup: IMediasoupInternal,
     private readonly instance: types.WebRtcTransport,
   ) {
-    super(mediasoup, router, instance);
+    super(mediasoup, instance);
   }
 
   public get iceCandidates() {
@@ -35,7 +33,6 @@ export default class WebRtcTransport extends Transport {
   ): Promise<Producer> {
     const producer = new Producer(
       this.mediasoup,
-      this,
       await this.instance.produce({
         kind: mediaKind,
         rtpParameters,

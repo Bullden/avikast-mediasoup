@@ -175,7 +175,7 @@ export default class MediasoupController {
 
   @MessagePattern({area: 'router', action: 'close'})
   async closeRouter(request: CloseRouterRequest): Promise<CloseRouterResponse> {
-    const response = await this.roomManager.closeRouter(request.roomId);
-    return {response};
+    await this.roomManager.closeRouter(request.roomId);
+    return {};
   }
 }

@@ -13,7 +13,7 @@ export default class PlainTransport extends Transport {
     readonly router: Router,
     private readonly instance: types.PlainTransport,
   ) {
-    super(mediasoup, router, instance);
+    super(mediasoup, instance);
   }
 
   public get roomId() {
@@ -40,7 +40,6 @@ export default class PlainTransport extends Transport {
   ): Promise<Producer> {
     const producer = new Producer(
       this.mediasoup,
-      this,
       await this.instance.produce({
         kind: mediaKind,
         rtpParameters,

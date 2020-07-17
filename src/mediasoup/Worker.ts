@@ -2,7 +2,7 @@ import {types} from 'mediasoup';
 import Router from './Router';
 import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
 import {BaseEntity} from 'mediasoup/BaseEntity';
-import {Filter} from 'mediasoup/Utils';
+import {Filter, removeFromArray} from 'mediasoup/Utils';
 
 export default class Worker extends BaseEntity {
   private readonly _routers: Array<Router> = [];
@@ -41,15 +41,8 @@ export default class Worker extends BaseEntity {
     return this._routers;
   }
 
-  public removeRouter(roomId: string) {
-    const router = this.routers.find((router) => router.matchAppData({roomId}));
-    if (!router) throw new Error('Close router: router has not been found');
-    this._routers.filter((element) => {
-      return element.roomId !== router.roomId;
-    });
-    // const routerArr = this._routers.filter((element) => {
-    //   return element.roomId !== router.roomId;
-    // });
-    // this._routers.push(...routerArr);
+  public closeRouter(router: Router) {
+    router.close();
+    removeFromArray(this.routers, router);
   }
 }

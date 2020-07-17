@@ -9,6 +9,8 @@ import ILogger from 'utils/ILogger';
 import IRecordService from 'services/record/IRecordSevice';
 import {IConfigService} from '@spryrocks/config-node';
 import WebRtcTransport from 'mediasoup/WebRtcTransport';
+import Transport from 'mediasoup/Transport';
+import {removeFromArray} from 'mediasoup/Utils';
 
 @Injectable()
 export default class MediaManager extends IMediaManager {
@@ -291,18 +293,8 @@ export default class MediaManager extends IMediaManager {
   }
 
   async closeRouter(roomId: string) {
-    const router = await this.findRouter(roomId);
-    console.log('close room router', router);
-    const transports = router.findTransports({});
-    console.log('close room transports', transports);
-    transports.forEach((transport) => {
-      const producers = transport.findProducers({});
-      producers.forEach((producer) => {
-        producer.close();
-        console.log('close room producer iteration', producer.id);
-      });
-      transport.close();
-    });
-    return router.close();
+    const router = this.mediasoup.findRouter({roomId});
+    if (!router) throw new Error('Router not found');
+    this.mediasoup.closeRouter(router);
   }
 }
