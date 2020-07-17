@@ -88,7 +88,7 @@ export default class Router extends BaseEntity {
   }
 
   public close() {
-    this.transports.forEach(this.closeTransport);
+    this.transports.forEach((transport) => this.closeTransport(transport));
     this.instance.close();
   }
 

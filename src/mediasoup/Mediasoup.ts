@@ -54,11 +54,9 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
     this.workers.find((element) => {
       worker = element.getRouters.find((router) => {
         return router.roomId === roomId;
-        // if (router.roomId === roomId) {
-        //   console.log('worker found!');
-        // }
       });
     });
+
     if (!worker) throw new Error('worker not exists');
     return worker;
   }

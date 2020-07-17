@@ -87,5 +87,5 @@ export default abstract class IMediaManager {
 
   abstract leaveRoom(roomId: string, userId: string): Promise<boolean>;
 
-  abstract closeRouter(roomId: string): Promise<void>;
+  abstract closeRouter(roomId: string): Promise<boolean>;
 }

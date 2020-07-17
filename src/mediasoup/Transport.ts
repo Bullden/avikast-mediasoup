@@ -56,17 +56,19 @@ export default abstract class Transport extends BaseEntity {
   }
 
   public close() {
-    this.producers.forEach(this.closeProducer);
-    this.consumers.forEach(this.closeConsumer);
+    this.producers.forEach((producer) => this.closeProducer(producer));
+    this.consumers.forEach((consumer) => this.closeConsumer(consumer));
     this.baseInstance.close();
   }
 
   public pushProducer(producer: Producer) {
     this.producers.push(producer);
+    console.log('PUSH PRODUCER', this.producers);
   }
 
   public pushConsumer(consumer: Consumer) {
     this.consumers.push(consumer);
+    console.log('PUSH CONSUMER', this.consumers);
   }
 
   public closeProducer(producer: Producer) {
