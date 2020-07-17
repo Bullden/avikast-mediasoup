@@ -1,9 +1,14 @@
 import {types} from 'mediasoup';
 import IMediasoupInternal from './IMediasoupInternal';
 import {BaseEntity} from 'mediasoup/BaseEntity';
+import Transport from 'mediasoup/Transport';
 
 export default class Producer extends BaseEntity {
-  constructor(mediasoup: IMediasoupInternal, private readonly instance: types.Producer) {
+  constructor(
+    mediasoup: IMediasoupInternal,
+    private readonly transport: Transport,
+    private readonly instance: types.Producer,
+  ) {
     super();
     this.instance = instance;
   }
@@ -26,5 +31,11 @@ export default class Producer extends BaseEntity {
 
   public get rtpParameters() {
     return this.instance.rtpParameters;
+  }
+
+  public close() {
+    const result = this.instance.close();
+    this.transport.removeProducer(this);
+    return result;
   }
 }

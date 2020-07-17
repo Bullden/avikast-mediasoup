@@ -3,9 +3,9 @@ export default abstract class Logger {
 
   abstract routerLog(message: string, info: string): void;
 
-  abstract transportLog(message: string, info: string): string;
+  abstract transportLog(message: string, info: string): void;
 
-  abstract producerLog(message: string, info: string): string;
+  abstract producerLog(message: string, info: string): void;
 
-  abstract consumerLog(message: string, info: string): string;
+  abstract consumerLog(message: string, info: string): void;
 }

@@ -3,22 +3,22 @@ import ILogger from 'utils/ILogger';
 
 export default class Logger extends ILogger {
   log(request: string) {
-    return request;
+    console.log(request);
   }
 
   routerLog(message: string, info: string) {
-    return `${message} ${info}`;
+    console.log(`${message} ${info}`);
   }
 
   producerLog(message: string, info: string) {
-    return `${message} ${info}`;
+    console.log(`${message} ${info}`);
   }
 
   consumerLog(message: string, info: string) {
-    return `${message} ${info}`;
+    console.log(`${message} ${info}`);
   }
 
   transportLog(message: string, info: string) {
-    return `${message} ${info}`;
+    console.log(`${message} ${info}`);
   }
 }

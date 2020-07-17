@@ -3,19 +3,17 @@ import IMediasoupInternal from './IMediasoupInternal';
 import Producer from './Producer';
 import Consumer from './Consumer';
 import {Filter, matchAppData} from 'mediasoup/Utils';
-import {BaseEntity} from 'mediasoup/BaseEntity';
 import {MediaKind} from 'entities/Mediasoup';
+import Transport from 'mediasoup/Transport';
+import Router from 'mediasoup/Router';
 
-export default class PlainTransport extends BaseEntity {
-  public readonly producers: Array<Producer> = [];
-
-  public readonly consumers: Array<Consumer> = [];
-
+export default class PlainTransport extends Transport {
   constructor(
-    private readonly mediasoup: IMediasoupInternal,
+    readonly mediasoup: IMediasoupInternal,
+    readonly router: Router,
     private readonly instance: types.PlainTransport,
   ) {
-    super();
+    super(mediasoup, router, instance);
   }
 
   public get roomId() {
@@ -42,13 +40,14 @@ export default class PlainTransport extends BaseEntity {
   ): Promise<Producer> {
     const producer = new Producer(
       this.mediasoup,
+      this,
       await this.instance.produce({
         kind: mediaKind,
         rtpParameters,
         appData,
       }),
     );
-    this.producers.push(producer);
+    this.pushProducer(producer);
     return producer;
   }
 
@@ -57,7 +56,7 @@ export default class PlainTransport extends BaseEntity {
     rtpCapabilities: types.RtpCapabilities,
     appData: object,
   ): Promise<Consumer> {
-    return new Consumer(
+    const consumer = new Consumer(
       this.mediasoup,
       await this.instance.consume({
         producerId,
@@ -65,6 +64,8 @@ export default class PlainTransport extends BaseEntity {
         appData,
       }),
     );
+    this.pushConsumer(consumer);
+    return consumer;
   }
 
   public findProducer(filter: Filter) {

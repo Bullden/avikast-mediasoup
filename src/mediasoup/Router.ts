@@ -1,15 +1,14 @@
 import {types} from 'mediasoup';
 import IMediasoupInternal from './IMediasoupInternal';
-import Transport from './WebRtcTransport';
+import WebRtcTransport from './WebRtcTransport';
 import {BaseEntity} from 'mediasoup/BaseEntity';
 import {Filter} from 'mediasoup/Utils';
 import PlainRtpTransport from './PlainTransport';
 import {IConfigService} from '@spryrocks/config-node';
+import Transport from 'mediasoup/Transport';
 
 export default class Router extends BaseEntity {
   private readonly transports: Array<Transport> = [];
-
-  private readonly plainTransports: Array<PlainRtpTransport> = [];
 
   constructor(
     private readonly mediasoup: IMediasoupInternal,
@@ -24,8 +23,9 @@ export default class Router extends BaseEntity {
 
   public async createWebRtcTransport(appData: Filter) {
     const config = this.mediasoup.getConfig();
-    const transport = new Transport(
+    const transport = new WebRtcTransport(
       this.mediasoup,
+      this,
       await this.instance.createWebRtcTransport({
         enableUdp: true,
         enableTcp: true,
@@ -42,6 +42,7 @@ export default class Router extends BaseEntity {
   public async createPlainTransport(appData: Filter, configService: IConfigService) {
     const transport = new PlainRtpTransport(
       this.mediasoup,
+      this,
       await this.instance.createPlainTransport({
         listenIp: configService.get('LISTEN_IP'),
         comedia: false,
@@ -49,7 +50,7 @@ export default class Router extends BaseEntity {
         appData,
       }),
     );
-    this.plainTransports.push(transport);
+    this.transports.push(transport);
     return transport;
   }
 
@@ -71,6 +72,10 @@ export default class Router extends BaseEntity {
     return undefined;
   }
 
+  public findTransports(filter: Filter) {
+    return this.transports.filter((t) => t.matchAppData(filter));
+  }
+
   get appData() {
     return this.instance.appData;
   }
@@ -83,7 +88,17 @@ export default class Router extends BaseEntity {
     });
   }
 
-  public closeRouter() {
+  public close() {
+    this.transports.forEach((transport) => {
+      transport.close();
+    });
     this.instance.close();
+    return true;
+  }
+
+  removeTransport(transport: Transport) {
+    const index = this.transports.indexOf(transport);
+    if (index < 0) throw new Error('Transport not fount');
+    this.transports.splice(index, 1);
   }
 }

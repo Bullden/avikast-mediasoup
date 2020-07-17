@@ -8,6 +8,7 @@ import {types} from 'mediasoup';
 import ILogger from 'utils/ILogger';
 import IRecordService from 'services/record/IRecordSevice';
 import {IConfigService} from '@spryrocks/config-node';
+import WebRtcTransport from 'mediasoup/WebRtcTransport';
 
 @Injectable()
 export default class MediaManager extends IMediaManager {
@@ -24,6 +25,7 @@ export default class MediaManager extends IMediaManager {
   async createRouter(roomId: string) {
     const router = await this.mediasoup.createRouter({roomId});
     this.logger.routerLog('router created with roomId:', router.roomId);
+    console.log();
     return router;
   }
 
@@ -37,6 +39,7 @@ export default class MediaManager extends IMediaManager {
     if (!router) {
       router = await this.mediasoup.createRouter({roomId});
     }
+    this.logger.transportLog('router created with roomId:', router.roomId);
     return router.createWebRtcTransport({
       roomId,
       userId,
@@ -116,6 +119,9 @@ export default class MediaManager extends IMediaManager {
       throw new Error(
         `No transport By roomId ${roomId} direction send and clientid ${clientId}`,
       );
+    if (!(transport instanceof WebRtcTransport)) {
+      throw new Error('transport type should be WebRtc');
+    }
     const producer = await transport.createProducer(
       transportId,
       rtpParameters,
@@ -141,13 +147,16 @@ export default class MediaManager extends IMediaManager {
     const transport = this.findTransport(roomId, 'receive', clientId);
     if (!transport)
       throw new Error(`By roomId ${roomId} direction receive and clientid ${clientId}`);
-
+    if (!(transport instanceof WebRtcTransport)) {
+      throw new Error('transport type should be WebRtc');
+    }
     const consumer = await transport.createConsumer(producerId, rtpCapabilities, {
       roomId,
       clientId,
       userId,
     });
     this.logger.consumerLog('consumer created', consumer.id);
+    console.log('consumer created', consumer);
     return consumer;
   }
 
@@ -173,7 +182,7 @@ export default class MediaManager extends IMediaManager {
     const producers: ProducerOptions[] = [];
     this.logger.producerLog('get producers by roomid:', roomId);
     transports
-      .filter((t) => t.dtlsState === 'connected')
+      .filter((t) => t instanceof WebRtcTransport && t.dtlsState === 'connected')
       .forEach((transport) => {
         producers.push(...transport.producers);
       });
@@ -273,20 +282,27 @@ export default class MediaManager extends IMediaManager {
     if (!recvTransport || !sendTransport)
       throw new Error(`leaveRoom: router not been found, user Id: ${roomId}`);
     if (recvTransport !== undefined) {
-      recvTransport.closeTransport();
+      recvTransport.close();
     }
     if (sendTransport !== undefined) {
-      sendTransport.closeTransport();
+      sendTransport.close();
     }
     return true;
   }
 
   async closeRouter(roomId: string) {
-    const router = await this.mediasoup.findRouter({roomId});
-    if (!router)
-      throw new Error(`closeRouter: worker has not been found, router: ${router}`);
-    router.closeRouter();
-    console.log(router, 'worker closeRouter');
-    return true;
+    const router = await this.findRouter(roomId);
+    console.log('close room router', router);
+    const transports = router.findTransports({});
+    console.log('close room transports', transports);
+    transports.forEach((transport) => {
+      const producers = transport.findProducers({});
+      producers.forEach((producer) => {
+        producer.close();
+        console.log('close room producer iteration', producer.id);
+      });
+      transport.close();
+    });
+    return router.close();
   }
 }
