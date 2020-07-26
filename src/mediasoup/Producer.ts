@@ -31,4 +31,12 @@ export default class Producer extends BaseEntity {
   public close() {
     return this.instance.close();
   }
+
+  public pause() {
+    return this.instance.pause();
+  }
+
+  public resume() {
+    return this.instance.resume();
+  }
 }

@@ -2,6 +2,7 @@ import {
   ConsumerOptions,
   MediaKind,
   MediaType,
+  MuteAction,
   ProducerOptions,
   RouterOptions,
   TransportOptions,
@@ -88,4 +89,10 @@ export default abstract class IMediaManager {
   abstract leaveRoom(roomId: string, userId: string): Promise<boolean>;
 
   abstract closeRouter(roomId: string): Promise<boolean>;
+
+  abstract muteProducer(
+    action: MuteAction,
+    roomId: string,
+    userId: string,
+  ): Promise<boolean>;
 }

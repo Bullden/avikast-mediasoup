@@ -32,3 +32,7 @@ export interface TransportOptions {
   iceParameters: object;
   dtlsParameters: object;
 }
+export enum MuteAction {
+  Mute = 'Mute',
+  UnMute = 'unMute',
+}

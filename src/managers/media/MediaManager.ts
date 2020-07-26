@@ -3,7 +3,7 @@ import {Injectable} from '@nestjs/common';
 import IMediaManager from 'managers/media/IMediaManager';
 import IMediasoup from 'mediasoup/IMediasoup';
 import {RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
-import {MediaKind, MediaType, ProducerOptions} from 'entities/Mediasoup';
+import {MediaKind, MediaType, MuteAction, ProducerOptions} from 'entities/Mediasoup';
 import {types} from 'mediasoup';
 import ILogger from 'utils/ILogger';
 import IRecordService from 'services/record/IRecordSevice';

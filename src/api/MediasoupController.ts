@@ -22,6 +22,8 @@ import {
   StopRecordingResponse,
   StartRecordingRequest,
   StartRecordingResponse,
+  MuteRequest,
+  MuteResponse,
 } from 'api/entities';
 import {Direction, ProducerOptions} from 'entities/Mediasoup';
 import {LeaveRoomRequest, LeaveRoomResponse} from 'api/entities/LeaveRoom';
@@ -177,5 +179,15 @@ export default class MediasoupController {
   async closeRouter(request: CloseRouterRequest): Promise<CloseRouterResponse> {
     await this.roomManager.closeRouter(request.roomId);
     return {};
+  }
+
+  @MessagePattern({area: 'producer', action: 'mute'})
+  async mute(request: MuteRequest): Promise<MuteResponse> {
+    const response = await this.roomManager.muteProducer(
+      request.action,
+      request.roomId,
+      request.userId,
+    );
+    return {response};
   }
 }
