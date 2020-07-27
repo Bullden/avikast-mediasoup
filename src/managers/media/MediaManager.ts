@@ -253,7 +253,6 @@ export default class MediaManager extends IMediaManager {
 
   // eslint-disable-next-line class-methods-use-this
   async stopRecording(roomId: string) {
-    console.log(roomId, 'stop record');
     return this.recordService.stopRecording(roomId);
   }
 
@@ -277,6 +276,14 @@ export default class MediaManager extends IMediaManager {
     const router = this.mediasoup.findRouter({roomId});
     if (!router) throw new Error('Router not found');
     router.close();
+    return true;
+  }
+
+  async muteProducer(action: MuteAction, roomId: string, userId: string) {
+    const producer = await this.findProducer(roomId, userId);
+    if (!producer) throw new Error('no producer for mute');
+    if (action === MuteAction.Mute) await producer.pause();
+    else if (action === MuteAction.UnMute) await producer.resume();
     return true;
   }
 }

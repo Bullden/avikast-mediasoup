@@ -33,6 +33,9 @@ export default class Producer extends BaseEntity {
   }
 
   public pause() {
+    if (this.instance.paused) {
+      return this.instance.resume();
+    }
     return this.instance.pause();
   }
 
