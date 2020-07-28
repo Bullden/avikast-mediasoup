@@ -89,7 +89,9 @@ export default class RecordService extends IRecordService {
 
   async stopRecording(roomId: string) {
     const process = this.processes.get(roomId);
-    if (!process) throw new Error(`There is now such a process with room id ${roomId}`);
+    if (!process) {
+      return false;
+    }
     process.kill('SIGINT');
     return true;
   }
