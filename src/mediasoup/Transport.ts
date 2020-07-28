@@ -44,6 +44,13 @@ export default abstract class Transport extends BaseEntity {
     return undefined;
   }
 
+  public findProducerById(producerId: String) {
+    for (const producer of this.producers) {
+      if (producer.id === producerId) return producer;
+    }
+    return undefined;
+  }
+
   public findProducers(filter: Filter) {
     return this.producers.filter((producer) => producer.matchAppData(filter));
   }

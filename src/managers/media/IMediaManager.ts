@@ -65,6 +65,11 @@ export default abstract class IMediaManager {
     userId: string,
   ): Promise<ProducerOptions> | undefined;
 
+  abstract findProducerById(
+    roomId: string,
+    producerId: string,
+  ): Promise<ProducerOptions> | undefined;
+
   abstract findConsumer(
     roomId: string,
     clientId: string,
@@ -94,5 +99,6 @@ export default abstract class IMediaManager {
     action: MuteAction,
     roomId: string,
     userId: string,
+    producerId: string,
   ): Promise<boolean>;
 }

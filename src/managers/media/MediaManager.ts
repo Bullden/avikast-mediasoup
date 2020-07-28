@@ -9,6 +9,7 @@ import ILogger from 'utils/ILogger';
 import IRecordService from 'services/record/IRecordSevice';
 import {IConfigService} from '@spryrocks/config-node';
 import WebRtcTransport from 'mediasoup/WebRtcTransport';
+import Producer from 'mediasoup/Producer';
 
 @Injectable()
 export default class MediaManager extends IMediaManager {
@@ -38,7 +39,7 @@ export default class MediaManager extends IMediaManager {
     if (!router) {
       router = await this.mediasoup.createRouter({roomId});
     }
-    this.logger.transportLog('router created with roomId:', router.roomId);
+    this.logger.transportLog('transport created with roomId:', router.roomId);
     return router.createWebRtcTransport({
       roomId,
       userId,
@@ -94,7 +95,10 @@ export default class MediaManager extends IMediaManager {
 
   findTransport(roomId: string, direction: 'send' | 'receive', clientId: string) {
     const router = this.mediasoup.findRouter({roomId});
-    if (!router) throw new Error(`findTransport cannot find router by roomId ${roomId}`);
+    if (!router)
+      throw new Error(
+        `findTransport cannot find router by roomId ${roomId}/${direction}`,
+      );
     const transport = router.findTransport({
       roomId,
       direction,
@@ -171,6 +175,26 @@ export default class MediaManager extends IMediaManager {
     if (!producer) throw new Error(`cannot find producer by userId ${userId}`);
     this.logger.producerLog('producer found', producer.id);
     return producer;
+  }
+
+  async findProducerById(roomId: string, producerId: string) {
+    const transport = this.findTransportByRoomId(roomId, 'send');
+    if (!transport) throw new Error(`cannot find transport by roomId ${roomId}`);
+    const producer = transport.findProducerById(producerId);
+    if (!producer) throw new Error(`cannot find producer by userId ${producerId}`);
+    this.logger.producerLog('producer found', producer.id);
+    return producer;
+  }
+
+  async findAllProducersByUserId(roomId: string, userId: string) {
+    const transport = this.findTransportByRoomId(roomId, 'send');
+    if (!transport) throw new Error(`cannot find transport by transport ${transport}`);
+    const producers = transport.getProducers;
+    const userProducers = producers.filter((element: Producer) => {
+      return element.appData.userId === userId;
+    });
+    if (!userProducers) throw new Error(`cannot find producer by userId ${userId}`);
+    return userProducers;
   }
 
   async getProducers(roomId: string) {
@@ -279,11 +303,27 @@ export default class MediaManager extends IMediaManager {
     return true;
   }
 
-  async muteProducer(action: MuteAction, roomId: string, userId: string) {
-    const producer = await this.findProducer(roomId, userId);
+  async muteProducer(
+    action: MuteAction,
+    roomId: string,
+    userId: string,
+    producerId: string,
+  ) {
+    const producer = await this.findProducerById(roomId, producerId);
+    // const producers = await this.findAllProducersByUserId(roomId, userId);
     if (!producer) throw new Error('no producer for mute');
     if (action === MuteAction.Mute) await producer.pause();
     else if (action === MuteAction.UnMute) await producer.resume();
+    // if (!producers) throw new Error('no producer for mute');
+    // if (action === MuteAction.Mute) {
+    //   producers.forEach((element: Producer) => {
+    //     element.pause();
+    //   });
+    // } else if (action === MuteAction.UnMute) {
+    //   producers.forEach((element: Producer) => {
+    //     element.resume();
+    //   });
+    // }
     return true;
   }
 }

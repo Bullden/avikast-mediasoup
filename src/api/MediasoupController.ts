@@ -187,6 +187,7 @@ export default class MediasoupController {
       request.action,
       request.roomId,
       request.userId,
+      request.producerId,
     );
     return {response};
   }
