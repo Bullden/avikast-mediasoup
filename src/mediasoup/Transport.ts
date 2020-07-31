@@ -45,6 +45,7 @@ export default abstract class Transport extends BaseEntity {
   }
 
   public findProducerById(producerId: String) {
+    console.log(this.producers);
     for (const producer of this.producers) {
       if (producer.id === producerId) return producer;
     }
@@ -69,6 +70,7 @@ export default abstract class Transport extends BaseEntity {
   }
 
   public pushProducer(producer: Producer) {
+    console.log('push producer with id', producer.id);
     this.producers.push(producer);
   }
 

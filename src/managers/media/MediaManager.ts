@@ -181,7 +181,7 @@ export default class MediaManager extends IMediaManager {
     const transport = this.findTransportByRoomId(roomId, 'send');
     if (!transport) throw new Error(`cannot find transport by roomId ${roomId}`);
     const producer = transport.findProducerById(producerId);
-    if (!producer) throw new Error(`cannot find producer by userId ${producerId}`);
+    if (!producer) throw new Error(`cannot find producer by producerId ${producerId}`);
     this.logger.producerLog('producer found', producer.id);
     return producer;
   }
