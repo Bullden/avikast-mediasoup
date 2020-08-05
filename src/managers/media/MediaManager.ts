@@ -39,6 +39,7 @@ export default class MediaManager extends IMediaManager {
     if (!router) {
       router = await this.mediasoup.createRouter({roomId});
     }
+    log(`transport created now is ${roomId} exemplars`);
     const transports = this.findTransportsByUserId(roomId, userId);
     if (transports.length > 0) {
       log(`transports now is ${transports.length} exemplars`);

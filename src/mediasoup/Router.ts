@@ -93,7 +93,9 @@ export default class Router extends BaseEntity {
 
   public removeTransport(transportId: string) {
     log('remove transport');
-    this.transports.filter((t) => t.id !== transportId);
+    const index = this.transports.findIndex((t) => t.id === transportId);
+    this.transports[index].close();
+    this.transports.splice(index, 1);
   }
 
   get appData() {
