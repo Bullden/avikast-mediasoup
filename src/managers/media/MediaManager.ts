@@ -53,9 +53,15 @@ export default class MediaManager extends IMediaManager {
     userId: string,
     direction: 'send' | 'receive',
   ) {
-    const transports = await this.findTransportsByUserId(roomId, userId, direction);
-    transports.forEach((el) => {
-      router.removeTransport(el.id);
+    const transports = await MediaManager.findWebRtcTransportsByUserId(
+      router,
+      roomId,
+      userId,
+      direction,
+    );
+    transports.forEach((transport) => {
+      router.removeTransport(transport);
+      this.logger.logWebRtcTransportRemoved(transport, router);
     });
   }
 
@@ -91,11 +97,7 @@ export default class MediaManager extends IMediaManager {
     const transport = router.findTransport({roomId, direction, clientId});
     if (!transport) throw new Error(`'Transport not found', ${transport}`);
 
-    await transport.connectToRouter(
-      dtlsParameters as types.DtlsParameters,
-      roomId,
-      transport.id,
-    );
+    await transport.connectToRouter(dtlsParameters as types.DtlsParameters);
   }
 
   findTransportByRoomId(roomId: string, direction: 'send' | 'receive') {
@@ -106,12 +108,16 @@ export default class MediaManager extends IMediaManager {
     return router.findTransport({roomId, direction});
   }
 
-  findTransportsByUserId(roomId: string, userId: string, direction: 'send' | 'receive') {
-    const router = this.mediasoup.findRouter({roomId});
-    if (!router) {
-      throw new Error(`findTransportByRoomId cannot find router by roomId ${roomId}`);
-    }
-    return router.findTransportsByFilter({roomId, userId, direction});
+  static findWebRtcTransportsByUserId(
+    router: Router,
+    roomId: string,
+    userId: string,
+    direction: 'send' | 'receive',
+  ): WebRtcTransport[] {
+    return router
+      .findTransportsByFilter({roomId, userId, direction})
+      .filter((transport) => transport instanceof WebRtcTransport)
+      .map((transport) => transport as WebRtcTransport);
   }
 
   findTransport(roomId: string, direction: 'send' | 'receive', clientId: string) {
@@ -271,7 +277,7 @@ export default class MediaManager extends IMediaManager {
         {roomId, userId},
       );
       producerIdTransport.transport.on('connect', () => {
-        this.logger.log('audio transport connect');
+        // this.logger.log('audio transport connect');
       });
     }
     if (audioProducerId) {

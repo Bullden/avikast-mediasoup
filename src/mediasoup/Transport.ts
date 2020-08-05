@@ -4,7 +4,6 @@ import Producer from './Producer';
 import Consumer from './Consumer';
 import {Filter, matchAppData, removeFromArray} from 'mediasoup/Utils';
 import {BaseEntity} from 'mediasoup/BaseEntity';
-import {log} from 'util';
 
 export default abstract class Transport extends BaseEntity {
   public readonly producers: Array<Producer> = [];
@@ -36,19 +35,19 @@ export default abstract class Transport extends BaseEntity {
 
   public async connectToRouter(
     dtlsParameters: types.DtlsParameters,
-    roomId: string,
-    transportId: string,
+    // roomId: string,
+    // transportId: string,
   ): Promise<void> {
     await this.baseInstance.connect({dtlsParameters});
-    this.baseInstance.on('icestatechange', (iceState) => {
-      log(`ICE state changed to ${iceState}`);
-      if (iceState === 'completed') {
-        this.mediasoup.removeTransport(roomId, transportId);
-      }
-      if (iceState === 'disconected') {
-        this.mediasoup.removeTransport(roomId, transportId);
-      }
-    });
+    // this.baseInstance.on('icestatechange', (iceState) => {
+    //   log(`ICE state changed to ${iceState}`);
+    //   if (iceState === 'completed') {
+    //     this.mediasoup.removeTransport(roomId, transport);
+    //   }
+    //   if (iceState === 'disconected') {
+    //     this.mediasoup.removeTransport(roomId, transport);
+    //   }
+    // });
   }
 
   public findProducer(filter: Filter) {

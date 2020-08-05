@@ -6,7 +6,7 @@ export default abstract class Logger {
 
   abstract logWebRtcTransportCreated(transport: WebRtcTransport, router: Router): void;
 
-  abstract log(request: string): void;
+  abstract logWebRtcTransportRemoved(transport: WebRtcTransport, router: Router): void;
 
   abstract routerLog(message: string, info: string): void;
 
