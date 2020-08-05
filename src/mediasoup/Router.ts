@@ -79,7 +79,7 @@ export default class Router extends BaseEntity {
         transports.push(transport);
       }
     }
-
+    log(`transports.length ${transports.length}`);
     return transports;
   }
 

@@ -36,16 +36,14 @@ export default class MediaManager extends IMediaManager {
     clientId: string,
   ) {
     let router = await this.mediasoup.findRouter({roomId});
-    if (!router) {
-      router = await this.mediasoup.createRouter({roomId});
-    }
+    if (!router) router = await this.mediasoup.createRouter({roomId});
+    if (!router) throw new Error(`'router not found', ${roomId}`);
     log(`transport created now is ${roomId} exemplars`);
-    const transports = this.findTransportsByUserId(roomId, userId);
+    const transports = this.findTransportsByUserId(roomId, userId, direction);
     if (transports.length > 0) {
       log(`transports now is ${transports.length} exemplars`);
       transports.forEach((el) => {
-        if (!router) throw new Error(`'router not found', ${roomId}`);
-        router.removeTransport(el.id);
+        router!.removeTransport(el.id);
       });
     }
     this.logger.transportLog('transport created with roomId:', router.roomId);
@@ -107,13 +105,13 @@ export default class MediaManager extends IMediaManager {
     return router.findTransport({roomId, direction});
   }
 
-  findTransportsByUserId(roomId: string, userId: string) {
+  findTransportsByUserId(roomId: string, userId: string, direction: 'send' | 'receive') {
     const router = this.mediasoup.findRouter({roomId});
     this.logger.transportLog('find transportS by room id', roomId);
     if (!router) {
       throw new Error(`findTransportByRoomId cannot find router by roomId ${roomId}`);
     }
-    return router.findTransportsByFilter({roomId, userId});
+    return router.findTransportsByFilter({roomId, userId, direction});
   }
 
   findTransport(roomId: string, direction: 'send' | 'receive', clientId: string) {
