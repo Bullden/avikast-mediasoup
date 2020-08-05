@@ -10,4 +10,6 @@ export default abstract class IMediasoup {
   abstract findWorker(roomId: string): Worker | undefined;
 
   abstract closeRouter(router: Router): void;
+
+  abstract removeTransport(roomId: string, transportId: string): void;
 }

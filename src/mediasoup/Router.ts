@@ -6,6 +6,7 @@ import {Filter, removeFromArray} from 'mediasoup/Utils';
 import PlainRtpTransport from './PlainTransport';
 import {IConfigService} from '@spryrocks/config-node';
 import Transport from 'mediasoup/Transport';
+import {log} from 'util';
 
 export default class Router extends BaseEntity {
   private readonly transports: Array<Transport> = [];
@@ -71,8 +72,28 @@ export default class Router extends BaseEntity {
     return undefined;
   }
 
+  public findTransportsByFilter(filter: Filter) {
+    const transports: Transport[] = [];
+    for (const transport of this.transports) {
+      if (transport.matchAppData(filter)) {
+        transports.push(transport);
+      }
+    }
+
+    return transports;
+  }
+
   public findTransports(filter: Filter) {
     return this.transports.filter((t) => t.matchAppData(filter));
+  }
+
+  public findTransportsById(transportId: string) {
+    return this.transports.filter((t) => t.id === transportId);
+  }
+
+  public removeTransport(transportId: string) {
+    log('remove transport');
+    this.transports.filter((t) => t.id !== transportId);
   }
 
   get appData() {

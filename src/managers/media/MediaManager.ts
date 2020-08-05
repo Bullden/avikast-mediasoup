@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+/* eslint-disable */
 import {Injectable} from '@nestjs/common';
 import IMediaManager from 'managers/media/IMediaManager';
 import IMediasoup from 'mediasoup/IMediasoup';
@@ -10,6 +10,7 @@ import IRecordService from 'services/record/IRecordSevice';
 import {IConfigService} from '@spryrocks/config-node';
 import WebRtcTransport from 'mediasoup/WebRtcTransport';
 import Producer from 'mediasoup/Producer';
+import {log} from 'util';
 
 @Injectable()
 export default class MediaManager extends IMediaManager {
@@ -38,6 +39,14 @@ export default class MediaManager extends IMediaManager {
     let router = await this.mediasoup.findRouter({roomId});
     if (!router) {
       router = await this.mediasoup.createRouter({roomId});
+    }
+    const transports = this.findTransportsByUserId(roomId, userId);
+    if (transports.length > 0) {
+      log(`transports now is ${transports.length} exemplars`);
+      transports.map((el) => {
+        if (!router) throw new Error(`'router not found', ${roomId}`);
+        router.removeTransport(el.id);
+      });
     }
     this.logger.transportLog('transport created with roomId:', router.roomId);
     return router.createWebRtcTransport({
@@ -80,7 +89,12 @@ export default class MediaManager extends IMediaManager {
     const transport = router.findTransport({roomId, direction, clientId});
     if (!transport) throw new Error(`'Transport not found', ${transport}`);
     this.logger.transportLog('transport connected', transport.id);
-    await transport.connectToRouter(dtlsParameters as types.DtlsParameters);
+
+    await transport.connectToRouter(
+      dtlsParameters as types.DtlsParameters,
+      roomId,
+      transport.id,
+    );
   }
 
   findTransportByRoomId(roomId: string, direction: 'send' | 'receive') {
@@ -91,6 +105,15 @@ export default class MediaManager extends IMediaManager {
     }
     this.logger.transportLog('transport founded', direction);
     return router.findTransport({roomId, direction});
+  }
+
+  findTransportsByUserId(roomId: string, userId: string) {
+    const router = this.mediasoup.findRouter({roomId});
+    this.logger.transportLog('find transportS by room id', roomId);
+    if (!router) {
+      throw new Error(`findTransportByRoomId cannot find router by roomId ${roomId}`);
+    }
+    return router.findTransportsByFilter({roomId, userId});
   }
 
   findTransport(roomId: string, direction: 'send' | 'receive', clientId: string) {

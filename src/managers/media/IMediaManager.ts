@@ -8,6 +8,7 @@ import {
   TransportOptions,
 } from 'entities/Mediasoup';
 import PlainRtpTransport from 'mediasoup/PlainTransport';
+import Transport from 'mediasoup/Transport';
 
 export default abstract class IMediaManager {
   abstract createRouter(roomId: string): Promise<RouterOptions>;
@@ -52,6 +53,8 @@ export default abstract class IMediaManager {
   ): Promise<ConsumerOptions>;
 
   abstract findRouter(roomId: string): Promise<RouterOptions>;
+
+  abstract findTransportsByUserId(roomId: string, userId: string): Transport[];
 
   abstract getProducers(roomId: string): Promise<ProducerOptions[]>;
 

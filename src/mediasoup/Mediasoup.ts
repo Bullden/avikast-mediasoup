@@ -6,6 +6,7 @@ import IMediasoupInternal from 'mediasoup/IMediasoupInternal';
 import {Filter} from 'mediasoup/Utils';
 import WorkerConfig from 'mediasoup/WorkerConfig';
 import Router from 'mediasoup/Router';
+import {log} from 'util';
 
 export default class Mediasoup extends IMediasoup implements IMediasoupInternal {
   private readonly workers: Array<Worker> = [];
@@ -72,6 +73,17 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
   closeRouter(router: Router) {
     const worker = this.findWorker(router.roomId);
     if (!worker) throw new Error('Worker not found');
+    worker.closeRouter(router);
+  }
+
+  removeTransport(roomId: string, transportId: string) {
+    const worker = this.findWorker(roomId);
+    if (!worker) throw new Error('Worker not found');
+    const router = worker?.findRouter({roomId});
+    if (!router) throw new Error('removeTransport: Worker not found');
+    router.removeTransport(transportId);
+    if (!worker) throw new Error('Worker not found');
+    log('transport has been removed');
     worker.closeRouter(router);
   }
 }
