@@ -1,4 +1,3 @@
-/* eslint-disable */
 import {Injectable} from '@nestjs/common';
 import IMediaManager from 'managers/media/IMediaManager';
 import IMediasoup from 'mediasoup/IMediasoup';
@@ -43,7 +42,7 @@ export default class MediaManager extends IMediaManager {
     const transports = this.findTransportsByUserId(roomId, userId);
     if (transports.length > 0) {
       log(`transports now is ${transports.length} exemplars`);
-      transports.map((el) => {
+      transports.forEach((el) => {
         if (!router) throw new Error(`'router not found', ${roomId}`);
         router.removeTransport(el.id);
       });
