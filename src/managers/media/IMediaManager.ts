@@ -52,7 +52,9 @@ export default abstract class IMediaManager {
     userId: string,
   ): Promise<ConsumerOptions>;
 
-  abstract findRouter(roomId: string): Promise<RouterOptions>;
+  abstract findRouter(roomId: string): Promise<RouterOptions | undefined>;
+
+  abstract findOrCreateRouter(roomId: string): Promise<RouterOptions>;
 
   abstract findTransportsByUserId(
     roomId: string,

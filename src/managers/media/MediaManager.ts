@@ -9,7 +9,7 @@ import IRecordService from 'services/record/IRecordSevice';
 import {IConfigService} from '@spryrocks/config-node';
 import WebRtcTransport from 'mediasoup/WebRtcTransport';
 import Producer from 'mediasoup/Producer';
-import {log} from 'util';
+import Router from 'mediasoup/Router';
 
 @Injectable()
 export default class MediaManager extends IMediaManager {
@@ -20,12 +20,11 @@ export default class MediaManager extends IMediaManager {
     private readonly configService: IConfigService,
   ) {
     super();
-    // eslint-disable-next-line global-require
   }
 
   async createRouter(roomId: string) {
     const router = await this.mediasoup.createRouter({roomId});
-    this.logger.routerLog('router created with roomId:', router.roomId);
+    this.logger.logRouterCreated(router);
     return router;
   }
 
@@ -35,23 +34,28 @@ export default class MediaManager extends IMediaManager {
     direction: 'send' | 'receive',
     clientId: string,
   ) {
-    let router = await this.mediasoup.findRouter({roomId});
-    if (!router) router = await this.mediasoup.createRouter({roomId});
-    if (!router) throw new Error(`'router not found', ${roomId}`);
-    log(`transport created now is ${roomId} exemplars`);
-    const transports = this.findTransportsByUserId(roomId, userId, direction);
-    if (transports.length > 0) {
-      log(`transports now is ${transports.length} exemplars`);
-      transports.forEach((el) => {
-        router!.removeTransport(el.id);
-      });
-    }
-    this.logger.transportLog('transport created with roomId:', router.roomId);
-    return router.createWebRtcTransport({
+    const router =
+      (await this.mediasoup.findRouter({roomId})) || (await this.createRouter(roomId));
+    await this.removeNotUsedTransports(router, roomId, userId, direction);
+    const transport = await router.createWebRtcTransport({
       roomId,
       userId,
       direction,
       clientId,
+    });
+    this.logger.logWebRtcTransportCreated(transport, router);
+    return transport;
+  }
+
+  private async removeNotUsedTransports(
+    router: Router,
+    roomId: string,
+    userId: string,
+    direction: 'send' | 'receive',
+  ) {
+    const transports = await this.findTransportsByUserId(roomId, userId, direction);
+    transports.forEach((el) => {
+      router.removeTransport(el.id);
     });
   }
 
@@ -83,10 +87,9 @@ export default class MediaManager extends IMediaManager {
     direction: 'send' | 'receive',
     clientId: string,
   ) {
-    const router = await this.findRouter(roomId);
+    const router = await this.findOrCreateRouter(roomId);
     const transport = router.findTransport({roomId, direction, clientId});
     if (!transport) throw new Error(`'Transport not found', ${transport}`);
-    this.logger.transportLog('transport connected', transport.id);
 
     await transport.connectToRouter(
       dtlsParameters as types.DtlsParameters,
@@ -97,17 +100,14 @@ export default class MediaManager extends IMediaManager {
 
   findTransportByRoomId(roomId: string, direction: 'send' | 'receive') {
     const router = this.mediasoup.findRouter({roomId});
-    this.logger.transportLog('find transport by room id', roomId);
     if (!router) {
       throw new Error(`findTransportByRoomId cannot find router by roomId ${roomId}`);
     }
-    this.logger.transportLog('transport founded', direction);
     return router.findTransport({roomId, direction});
   }
 
   findTransportsByUserId(roomId: string, userId: string, direction: 'send' | 'receive') {
     const router = this.mediasoup.findRouter({roomId});
-    this.logger.transportLog('find transportS by room id', roomId);
     if (!router) {
       throw new Error(`findTransportByRoomId cannot find router by roomId ${roomId}`);
     }
@@ -125,7 +125,6 @@ export default class MediaManager extends IMediaManager {
       direction,
       clientId,
     });
-    this.logger.transportLog('find transport by room id and client id:', roomId);
     return transport;
   }
 
@@ -184,9 +183,11 @@ export default class MediaManager extends IMediaManager {
   }
 
   async findRouter(roomId: string) {
-    let router = this.mediasoup.findRouter({roomId});
-    if (!router) router = await this.mediasoup.createRouter({roomId});
-    return router;
+    return this.mediasoup.findRouter({roomId});
+  }
+
+  async findOrCreateRouter(roomId: string) {
+    return (await this.findRouter(roomId)) || this.createRouter(roomId);
   }
 
   async findProducer(roomId: string, userId: string) {
@@ -252,7 +253,7 @@ export default class MediaManager extends IMediaManager {
     producerId?: string,
     audioProducerId?: string,
   ) {
-    const router = await this.findRouter(roomId);
+    const router = await this.findOrCreateRouter(roomId);
     router.rtpCapabilities.codecs?.find((c) => c.mimeType === 'video/H264');
     if (producerId) {
       const producerIdTransport = await router.createPlainTransport(

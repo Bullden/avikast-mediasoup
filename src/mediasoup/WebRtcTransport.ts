@@ -63,4 +63,16 @@ export default class WebRtcTransport extends Transport {
   public get dtlsState() {
     return this.instance.dtlsState;
   }
+
+  public get userId() {
+    return this.appData.userId;
+  }
+
+  public get direction() {
+    return this.appData.direction;
+  }
+
+  public get clientId() {
+    return this.appData.clientId;
+  }
 }
