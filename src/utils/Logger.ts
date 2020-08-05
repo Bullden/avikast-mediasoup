@@ -2,6 +2,7 @@
 import ILogger from 'utils/ILogger';
 import Router from 'mediasoup/Router';
 import WebRtcTransport from 'mediasoup/WebRtcTransport';
+import Producer from 'mediasoup/Producer';
 
 export default class Logger extends ILogger {
   logRouterCreated(router: Router) {
@@ -10,23 +11,32 @@ export default class Logger extends ILogger {
 
   logWebRtcTransportCreated(transport: WebRtcTransport, router: Router) {
     console.log(
-      `${JSON.stringify({routerId: router.id})} Transport created: `,
+      JSON.stringify({routerId: router.id}),
+      'Transport created:',
       Logger.stringifyWebRtcTransport(transport),
     );
   }
 
   logWebRtcTransportRemoved(transport: WebRtcTransport, router: Router) {
     console.log(
-      `${JSON.stringify({routerId: router.id})} Transport removed: `,
+      JSON.stringify({routerId: router.id}),
+      'Transport removed:',
       Logger.stringifyWebRtcTransport(transport),
     );
   }
 
-  routerLog(message: string, info: string) {
-    console.log(`${message} ${info}`);
+  logProducerCreated(producer: Producer, transport: WebRtcTransport, router: Router) {
+    console.log(
+      JSON.stringify({
+        routerId: router.id,
+        transportId: transport.id,
+      }),
+      'Producer created:',
+      Logger.stringifyProducer(producer),
+    );
   }
 
-  producerLog(message: string, info: string) {
+  routerLog(message: string, info: string) {
     console.log(`${message} ${info}`);
   }
 
@@ -48,6 +58,16 @@ export default class Logger extends ILogger {
       userId: transport.userId,
       direction: transport.direction,
       clientId: transport.clientId,
+    })}`;
+  }
+
+  private static stringifyProducer(producer: Producer) {
+    return `Producer ${JSON.stringify({
+      kind: producer.kind,
+      roomId: producer.roomId,
+      clientId: producer.clientId,
+      userId: producer.userId,
+      mediaType: producer.mediaType,
     })}`;
   }
 }

@@ -42,4 +42,16 @@ export default class Producer extends BaseEntity {
   public resume() {
     return this.instance.resume();
   }
+
+  public get clientId() {
+    return this.instance.appData.clientId;
+  }
+
+  public get userId() {
+    return this.instance.appData.userId;
+  }
+
+  public get mediaType() {
+    return this.instance.appData.mediaType;
+  }
 }

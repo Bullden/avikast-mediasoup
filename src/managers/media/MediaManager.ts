@@ -143,6 +143,7 @@ export default class MediaManager extends IMediaManager {
     mediaType: MediaType,
     mediaKind: MediaKind,
   ) {
+    const router = await this.findOrCreateRouter(roomId);
     const transport = this.findTransport(roomId, 'send', clientId); // todo: refactor
     if (!transport)
       throw new Error(
@@ -162,7 +163,7 @@ export default class MediaManager extends IMediaManager {
         mediaType,
       },
     );
-    this.logger.producerLog('producer created', producer.id);
+    this.logger.logProducerCreated(producer, transport, router);
     return producer;
   }
 
@@ -201,7 +202,6 @@ export default class MediaManager extends IMediaManager {
     if (!transport) throw new Error(`cannot find transport by transport ${transport}`);
     const producer = transport.findProducer({roomId});
     if (!producer) throw new Error(`cannot find producer by userId ${userId}`);
-    this.logger.producerLog('producer found', producer.id);
     return producer;
   }
 
@@ -210,7 +210,6 @@ export default class MediaManager extends IMediaManager {
     if (!transport) throw new Error(`cannot find transport by roomId ${roomId}`);
     const producer = transport.findProducerById(producerId);
     if (!producer) throw new Error(`cannot find producer by producerId ${producerId}`);
-    this.logger.producerLog('producer found', producer.id);
     return producer;
   }
 
@@ -230,13 +229,11 @@ export default class MediaManager extends IMediaManager {
     if (!router) throw new Error(`cannot find router by roomId ${router}`);
     const transports = router.getTransports();
     const producers: ProducerOptions[] = [];
-    this.logger.producerLog('get producers by roomid:', roomId);
     transports
       .filter((t) => t instanceof WebRtcTransport && t.dtlsState === 'connected')
       .forEach((transport) => {
         producers.push(...transport.producers);
       });
-    this.logger.producerLog('result producers array length:', roomId);
     if (!producers) throw new Error(`no producer on this router.roomId ${router.roomId}`);
     return producers;
   }

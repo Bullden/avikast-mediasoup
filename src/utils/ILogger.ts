@@ -1,5 +1,6 @@
 import Router from 'mediasoup/Router';
 import WebRtcTransport from 'mediasoup/WebRtcTransport';
+import Producer from 'mediasoup/Producer';
 
 export default abstract class Logger {
   abstract logRouterCreated(router: Router): void;
@@ -8,9 +9,13 @@ export default abstract class Logger {
 
   abstract logWebRtcTransportRemoved(transport: WebRtcTransport, router: Router): void;
 
-  abstract routerLog(message: string, info: string): void;
+  abstract logProducerCreated(
+    producer: Producer,
+    transport: WebRtcTransport,
+    router: Router,
+  ): void;
 
-  abstract producerLog(message: string, info: string): void;
+  abstract routerLog(message: string, info: string): void;
 
   abstract consumerLog(message: string, info: string): void;
 }
