@@ -18,7 +18,7 @@ export default class RecordService extends IRecordService {
     this.configDirectory = `${getProjectRoot()}/config`;
   }
 
-  async startRecording(roomId: string, recordId: string) {
+  async startRecording(roomId: string, recordId: string, audio: boolean) {
     const process = require('child_process');
     this.processes.set(roomId, process);
     // @ts-ignore
@@ -26,7 +26,6 @@ export default class RecordService extends IRecordService {
     const promise = new Promise((res) => {
       recResolve = res;
     });
-    const audio = true;
     const video = true;
     const h264 = true;
     const exit = false;
