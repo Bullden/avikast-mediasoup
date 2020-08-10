@@ -295,8 +295,8 @@ export default class MediaManager extends IMediaManager {
         this.logger.consumerLog('audio transport connect', audioConsumer.id);
       });
     }
-
-    return this.recordService.startRecording(roomId, recordId);
+    const audio = !!audioProducerId;
+    return this.recordService.startRecording(roomId, recordId, audio);
     // return true;
   }
 
