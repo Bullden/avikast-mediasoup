@@ -98,6 +98,7 @@ export default class MediaManager extends IMediaManager {
     if (!transport) throw new Error(`'Transport not found', ${transport}`);
 
     await transport.connectToRouter(dtlsParameters as types.DtlsParameters);
+    await transport.setMaxIncomingBitrate(2000);
   }
 
   findTransportByRoomId(roomId: string, direction: 'send' | 'receive') {
