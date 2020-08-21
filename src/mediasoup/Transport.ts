@@ -98,4 +98,10 @@ export default abstract class Transport extends BaseEntity {
     consumer.close();
     removeFromArray(this.consumers, consumer);
   }
+
+  public async setMaxIncomingBitrate(bitrate: number) {
+    // eslint-disable-next-line no-console
+    console.log('bitarate changed to ', bitrate);
+    await this.baseInstance.setMaxIncomingBitrate(bitrate);
+  }
 }
