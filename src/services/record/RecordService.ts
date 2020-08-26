@@ -7,13 +7,17 @@ import {RtpParameters} from 'mediasoup/lib/RtpParameters';
 import {ChildProcess} from 'child_process';
 import {getProjectRoot} from 'utils/FileSystemUtils';
 import ffmpegPath from 'ffmpeg-static';
+import ILogger from 'utils/ILogger';
 
 export default class RecordService extends IRecordService {
   private readonly processes: Map<string, ChildProcess> = new Map();
 
   private readonly configDirectory: string;
 
-  constructor(private readonly recordingsDirectory: string) {
+  constructor(
+    private readonly recordingsDirectory: string,
+    private readonly logger: ILogger,
+  ) {
     super();
     this.configDirectory = `${getProjectRoot()}/config`;
   }
@@ -83,6 +87,12 @@ export default class RecordService extends IRecordService {
         });
     });
     await recResolve;
+    this.logger.recordLog(
+      'Start recording roomId, audio ',
+      roomId,
+      '.Audio Producer Id: ',
+      audio,
+    );
     return true;
   }
 
@@ -92,6 +102,12 @@ export default class RecordService extends IRecordService {
       return false;
     }
     process.kill('SIGINT');
+    this.logger.recordLog(
+      'Stop recording, roomId: ',
+      roomId,
+      '.Process PID:',
+      process.pid,
+    );
     return true;
   }
 }

@@ -18,4 +18,11 @@ export default abstract class Logger {
   abstract routerLog(message: string, info: string): void;
 
   abstract consumerLog(message: string, info: string): void;
+
+  abstract recordLog(
+    message: string,
+    info: string,
+    audioMessage?: string,
+    audio?: unknown,
+  ): void;
 }
