@@ -48,6 +48,10 @@ export default class Logger extends ILogger {
     console.log(`${message} ${info}`);
   }
 
+  recordLog(message: string, roomId: string, audioMessage?: string, audio?: unknown) {
+    console.log(`${message} ${roomId} ${audioMessage} ${audio}`);
+  }
+
   private static stringifyRouter(router: Router) {
     return `Router ${JSON.stringify({id: router.id, roomId: router.roomId})}`;
   }

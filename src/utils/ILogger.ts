@@ -21,7 +21,7 @@ export default abstract class Logger {
 
   abstract recordLog(
     message: string,
-    info: string,
+    roomId: string,
     audioMessage?: string,
     audio?: unknown,
   ): void;
