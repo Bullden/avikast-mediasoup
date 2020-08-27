@@ -4,7 +4,6 @@ import IRecordService from 'services/record/IRecordSevice';
 import RecordService from 'services/record/RecordService';
 import {IConfigService} from '@spryrocks/config-node';
 import * as fs from 'fs';
-import ILogger from 'utils/ILogger';
 
 @Module({
   imports: [
@@ -13,13 +12,13 @@ import ILogger from 'utils/ILogger';
   ],
   providers: [
     {
-      inject: [IConfigService, ILogger],
+      inject: [IConfigService],
       provide: IRecordService,
-      useFactory: (configService: IConfigService, logger: ILogger) => {
+      useFactory: (configService: IConfigService) => {
         const rootDirectory = configService.get('RECORDINGS_ROOT_DIRECTORY');
         if (!fs.existsSync(rootDirectory))
           throw new Error(`Recordings directory not exists at '${rootDirectory}'`);
-        return new RecordService(rootDirectory, logger);
+        return new RecordService(rootDirectory);
       },
     },
   ],

@@ -14,10 +14,7 @@ export default class RecordService extends IRecordService {
 
   private readonly configDirectory: string;
 
-  constructor(
-    private readonly recordingsDirectory: string,
-    private readonly logger: ILogger,
-  ) {
+  constructor(private readonly recordingsDirectory: string) {
     super();
     this.configDirectory = `${getProjectRoot()}/config`;
   }
@@ -87,12 +84,7 @@ export default class RecordService extends IRecordService {
         });
     });
     await recResolve;
-    this.logger.recordLog(
-      'Start recording roomId, audio ',
-      roomId,
-      '.Audio Producer Id: ',
-      audio,
-    );
+    console.log(`Start recording roomID: ${roomId}.Audio Producer Id: ${audio}`);
     return true;
   }
 
@@ -102,12 +94,7 @@ export default class RecordService extends IRecordService {
       return false;
     }
     process.kill('SIGINT');
-    this.logger.recordLog(
-      'Stop recording, roomId: ',
-      roomId,
-      '.Process PID:',
-      process.pid,
-    );
+    console.log(`Stop recording roomID: ${roomId}.Process PID:: ${process.pid}`);
     return true;
   }
 }
