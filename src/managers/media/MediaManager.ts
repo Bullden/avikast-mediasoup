@@ -2,7 +2,13 @@ import {Injectable} from '@nestjs/common';
 import IMediaManager from 'managers/media/IMediaManager';
 import IMediasoup from 'mediasoup/IMediasoup';
 import {RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
-import {MediaKind, MediaType, MuteAction, ProducerOptions} from 'entities/Mediasoup';
+import {
+  MediaKind,
+  MediaType,
+  MuteAction,
+  ProducerOptions,
+  Quality,
+} from 'entities/Mediasoup';
 import {types} from 'mediasoup';
 import ILogger from 'utils/ILogger';
 import IRecordService from 'services/record/IRecordSevice';
@@ -92,13 +98,15 @@ export default class MediaManager extends IMediaManager {
     dtlsParameters: object,
     direction: 'send' | 'receive',
     clientId: string,
+    quality: Quality,
   ) {
     const router = await this.findOrCreateRouter(roomId);
     const transport = router.findTransport({roomId, direction, clientId});
     if (!transport) throw new Error(`'Transport not found', ${transport}`);
 
     await transport.connectToRouter(dtlsParameters as types.DtlsParameters);
-    await transport.setMaxIncomingBitrate(2000);
+    if (quality === Quality.Low) await transport.setMaxIncomingBitrate(2000);
+    if (quality === Quality.High) await transport.setMaxIncomingBitrate(80000);
   }
 
   findTransportByRoomId(roomId: string, direction: 'send' | 'receive') {

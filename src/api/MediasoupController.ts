@@ -69,6 +69,7 @@ export default class MediasoupController {
       request.dtlsParameters,
       request.direction as Direction,
       request.clientId,
+      request.quality,
     );
   }
 

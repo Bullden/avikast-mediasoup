@@ -36,3 +36,8 @@ export enum MuteAction {
   Mute = 'Mute',
   UnMute = 'unMute',
 }
+
+export enum Quality {
+  Low = 'Low',
+  High = 'High',
+}

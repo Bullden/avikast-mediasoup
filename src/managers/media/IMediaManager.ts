@@ -4,6 +4,7 @@ import {
   MediaType,
   MuteAction,
   ProducerOptions,
+  Quality,
   RouterOptions,
   TransportOptions,
 } from 'entities/Mediasoup';
