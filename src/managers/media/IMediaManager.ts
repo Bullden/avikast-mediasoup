@@ -32,6 +32,7 @@ export default abstract class IMediaManager {
     dtlsParameters: object,
     direction: 'send' | 'receive',
     clientId: string,
+    quality: Quality,
   ): Promise<void>;
 
   abstract createProducer(
