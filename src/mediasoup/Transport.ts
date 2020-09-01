@@ -33,11 +33,21 @@ export default abstract class Transport extends BaseEntity {
     return this.producers;
   }
 
+  public get getConsumers() {
+    return this.consumers;
+  }
+
   public async connectToRouter(
     dtlsParameters: types.DtlsParameters,
     // roomId: string,
     // transportId: string,
   ): Promise<void> {
+    // const consumers = this.consumers.map((el) => {
+    //   return el.id;
+    // });
+    // const producers = this.producers.map((el) => {
+    //   return el.id;
+    // });
     await this.baseInstance.connect({dtlsParameters});
     // this.baseInstance.on('icestatechange', (iceState) => {
     //   log(`ICE state changed to ${iceState}`);

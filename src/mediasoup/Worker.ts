@@ -30,6 +30,12 @@ export default class Worker extends BaseEntity {
   }
 
   public findRouter(filter: Filter) {
+    // console.log(
+    //   'findRouter router, router list :',
+    //   this.routers.map((el) => {
+    //     return el;
+    //   }),
+    // );
     return this.routers.find((router) => router.matchAppData(filter));
   }
 

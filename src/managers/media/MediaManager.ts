@@ -2,13 +2,7 @@ import {Injectable} from '@nestjs/common';
 import IMediaManager from 'managers/media/IMediaManager';
 import IMediasoup from 'mediasoup/IMediasoup';
 import {RtpCapabilities, RtpParameters} from 'mediasoup/lib/types';
-import {
-  MediaKind,
-  MediaType,
-  MuteAction,
-  ProducerOptions,
-  Quality,
-} from 'entities/Mediasoup';
+import {MediaKind, MediaType, MuteAction, Quality} from 'entities/Mediasoup';
 import {types} from 'mediasoup';
 import ILogger from 'utils/ILogger';
 import IRecordService from 'services/record/IRecordSevice';
@@ -140,6 +134,7 @@ export default class MediaManager extends IMediaManager {
       direction,
       clientId,
     });
+    // console.log('FIND TRINSPORT', transport);
     return transport;
   }
 
@@ -185,16 +180,20 @@ export default class MediaManager extends IMediaManager {
   ) {
     const transport = this.findTransport(roomId, 'receive', clientId);
     if (!transport)
-      throw new Error(`By roomId ${roomId} direction receive and clientid ${clientId}`);
+      throw new Error(
+        ` createConsumer. cannot find transport by roomId ${roomId} direction receive and clientid ${clientId}`,
+      );
     if (!(transport instanceof WebRtcTransport)) {
       throw new Error('transport type should be WebRtc');
     }
-    const consumer = await transport.createConsumer(producerId, rtpCapabilities, {
+    const appData = {
       roomId,
       clientId,
       userId,
-    });
+    };
+    const consumer = await transport.createConsumer(producerId, rtpCapabilities, appData);
     this.logger.consumerLog('consumer created', consumer.id);
+    // const {id, producerId, rtpParameters, appData } = consumer
     return consumer;
   }
 
@@ -208,7 +207,7 @@ export default class MediaManager extends IMediaManager {
 
   async findProducer(roomId: string, userId: string) {
     const transport = this.findTransportByRoomId(roomId, 'send');
-    if (!transport) throw new Error(`cannot find transport by transport ${transport}`);
+    if (!transport) throw new Error(`cannot find transport by roomID ${roomId}`);
     const producer = transport.findProducer({roomId});
     if (!producer) throw new Error(`cannot find producer by userId ${userId}`);
     return producer;
@@ -237,7 +236,12 @@ export default class MediaManager extends IMediaManager {
     const router = await this.mediasoup.findRouter({roomId});
     if (!router) throw new Error(`cannot find router by roomId ${router}`);
     const transports = router.getTransports();
-    const producers: ProducerOptions[] = [];
+    const producers: {
+      id: string;
+      kind: MediaKind;
+      rtpParameters: object;
+      appData: object;
+    }[] = [];
     transports
       .filter((t) => t instanceof WebRtcTransport && t.dtlsState === 'connected')
       .forEach((transport) => {

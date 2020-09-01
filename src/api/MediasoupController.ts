@@ -88,6 +88,7 @@ export default class MediasoupController {
       producerId: producer.id,
       kind: producer.kind,
       rtpParameters: producer.rtpParameters,
+      appData: producer.appData,
     };
   }
 
@@ -104,6 +105,7 @@ export default class MediasoupController {
       id: consumer.id,
       producerId: consumer.producerId,
       rtpParameters: consumer.rtpParameters,
+      appData: consumer.appData,
     };
   }
 
@@ -136,6 +138,7 @@ export default class MediasoupController {
           id: producer.id,
           kind: producer.kind,
           rtpParameters: producer.rtpParameters,
+          appData: producer.appData,
         }),
       ),
     };

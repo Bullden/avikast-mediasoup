@@ -19,4 +19,5 @@ export interface CreateProducerResponse {
   producerId: string;
   kind: MediaKind;
   rtpParameters: object;
+  appData: object;
 }

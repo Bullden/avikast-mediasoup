@@ -32,7 +32,7 @@ export default class RecordService extends IRecordService {
     const exit = false;
     // TODO set vp8
     let cmdInputPath = `${this.configDirectory}/input-h264.sdp`;
-    let cmdOutputPath = `${this.recordingsDirectory}/output-ffmpeg-vp8.avi`;
+    let cmdOutputPath = `${this.recordingsDirectory}/output-ffmpeg-vp8.mp4`;
     let cmdCodec = '';
     let cmdFormat = '-f avi -flags +global_header';
 

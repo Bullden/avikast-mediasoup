@@ -4,16 +4,11 @@ export type MediaType = 'camera' | 'screen';
 
 export type Direction = 'send' | 'receive';
 
-export interface MediaAttributes {
-  kind: MediaKind;
-  mediaType: MediaType;
-  direction: Direction;
-}
-
 export interface ConsumerOptions {
   id: string;
   producerId: string;
   rtpParameters: object;
+  appData: object;
 }
 
 export interface RouterOptions {
@@ -24,6 +19,7 @@ export interface ProducerOptions {
   id: string;
   kind: MediaKind;
   rtpParameters: object;
+  appData: object;
 }
 
 export interface TransportOptions {

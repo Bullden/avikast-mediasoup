@@ -45,7 +45,9 @@ export default class Mediasoup extends IMediasoup implements IMediasoupInternal 
   public findRouter(filter: Filter) {
     for (const worker of this.workers) {
       const router = worker.findRouter(filter);
-      if (router) return router;
+      if (router) {
+        return router;
+      }
     }
     return undefined;
   }
